@@ -91,7 +91,7 @@ func (q *UserREPO) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIde
 	logger.WithField("user_id", user.ID.String()).Info("Authentication successful")
 
 	return &pb.GetUserByIdentifierResponse{
-		Status: 204, // ✅ No Content
+		Status: 200, // ✅ No Content
 	}, nil
 }
 
