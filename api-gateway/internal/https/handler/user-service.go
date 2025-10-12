@@ -1,15 +1,16 @@
-package handler 
+package handler
 
 import (
+	"api-gateway/internal/models"
 	"context"
 	"net/http"
-	
-	pb"github.com/xadichamakhkamova/YouthUnionContracts/genproto/userpb"
+
+	pb "github.com/xadichamakhkamova/YouthUnionContracts/genproto/userpb"
 
 	"github.com/gin-gonic/gin"
 )
 
-//! ------------------ User Handlers -------------------
+// ! ------------------ User Handlers -------------------
 // @Router /api/v1/users/{id} [get]
 // @Summary Get User By ID
 // @Security BearerAuth
@@ -25,13 +26,15 @@ func (h *Handler) GetUserById(c *gin.Context) {
 
 	resp, err := h.service.GetUserById(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, resp)
 }
-
 
 // @Router /api/v1/users/{id} [put]
 // @Summary Update User
@@ -51,13 +54,19 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	req.Id = id
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	resp, err := h.service.UpdateUser(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -80,7 +89,10 @@ func (h *Handler) ListUsers(c *gin.Context) {
 
 	resp, err := h.service.ListUsers(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -102,14 +114,17 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 
 	resp, err := h.service.DeleteUser(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, resp)
 }
 
-//! ------------------- User Roles -------------------
+// ! ------------------- User Roles -------------------
 // @Router /api/v1/users/{id}/roles [post]
 // @Summary Assign Role to User
 // @Security BearerAuth
@@ -125,13 +140,19 @@ func (h *Handler) AssignRoleToUser(c *gin.Context) {
 
 	var req pb.AssignRoleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	resp, err := h.service.AssignRoleToUser(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -156,7 +177,10 @@ func (h *Handler) RemoveRoleFromUser(c *gin.Context) {
 
 	resp, err := h.service.RemoveRoleFromUser(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -178,14 +202,17 @@ func (h *Handler) ListUserRoles(c *gin.Context) {
 
 	resp, err := h.service.ListUserRoles(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, resp)
 }
 
-//! ------------------- Role Handler -------------------
+// ! ------------------- Role Handler -------------------
 // @Router /api/v1/roles [post]
 // @Summary Create Role Type
 // @Security BearerAuth
@@ -200,13 +227,19 @@ func (h *Handler) CreateRole(c *gin.Context) {
 
 	var req pb.CreateRoleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	res, err := h.service.CreateRole(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -228,7 +261,10 @@ func (h *Handler) GetRoleById(c *gin.Context) {
 
 	resp, err := h.service.GetRoleById(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -253,13 +289,19 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 	req.Id = id
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	resp, err := h.service.UpdateRole(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -279,7 +321,10 @@ func (h *Handler) ListRoles(c *gin.Context) {
 	req := pb.ListRolesRequest{}
 	resp, err := h.service.ListRoles(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -301,7 +346,10 @@ func (h *Handler) DeleteRole(c *gin.Context) {
 
 	resp, err := h.service.DeleteRole(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, models.ErrorResponse{
+			Code:    http.StatusNotFound,
+			Message: err.Error(),
+		})
 		return
 	}
 

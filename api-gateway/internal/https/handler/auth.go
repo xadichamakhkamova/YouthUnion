@@ -2,6 +2,7 @@ package handler
 
 import (
 	"api-gateway/internal/https/token"
+	"api-gateway/internal/models"
 	"context"
 	"net/http"
 
@@ -25,13 +26,19 @@ func (h *Handler) CreateUser(c *gin.Context) {
 
 	var req pb.CreateUserRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	resp, err := h.service.CreateUser(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
@@ -52,15 +59,22 @@ func (h *Handler) GetUserByIdentifier(c *gin.Context) {
 
 	var req pb.GetUserByIdentifierRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
-	resp, err := h.service.GetUserByIdentifier(context.Background(), &req)
-	if err != nil  || resp.Status != 200 {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+	_, err := h.service.GetUserByIdentifier(context.Background(), &req)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, models.ErrorResponse{
+			Code:    http.StatusUnauthorized,
+			Message: err.Error(),
+		})
 		return
 	}
+	
 	token := token.GenereteJWTToken(int(req.Identifier))
 	c.JSON(http.StatusOK, token)
 }
@@ -80,13 +94,19 @@ func (h *Handler) ChangePassword(c *gin.Context) {
 
 	var req pb.ChangePasswordRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
 		return
 	}
 
 	resp, err := h.service.ChangePassword(context.Background(), &req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 
