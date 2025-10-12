@@ -1,9 +1,13 @@
-# Ignore all env files
+# Env files
 *.env
+**/*.env
 
-# Ignore all config.yaml files in all services
+# Config files
+config.yaml
 **/config.yaml
 **/config/config.yaml
 
-# Ignore TLS certs
+# TLS certs
+*.pem
+**/*.pem
 **/tls/*.pem
