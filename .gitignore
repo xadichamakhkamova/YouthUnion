@@ -2,6 +2,7 @@
 *.env
 
 # Ignore all config.yaml files in all services
+**/config.yaml
 **/config/config.yaml
 
 # Ignore TLS certs
