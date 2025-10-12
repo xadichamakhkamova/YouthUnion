@@ -8,6 +8,12 @@ const (
 	Female            Gender = "FEMALE"
 )
 
+type ErrorResponse struct {
+    Code    int    `json:"code" example:"400"`            // HTTP status kodi
+    Message string `json:"message" example:"invalid data"` // Xatolik tavsifi
+    Details any    `json:"details,omitempty"`              // Qo‘shimcha ma’lumot (ixtiyoriy)
+}
+
 type User struct {
 	ID          string `json:"id" db:"id"`
 	Identifier  int32  `json:"identifier" db:"identifier"`
