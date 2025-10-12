@@ -59,7 +59,7 @@ func (r *UserREPO) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) 
 		Faculty:      user.Faculty.String,
 		Course:       int32(user.Course.Int16),
 		BirthDate:    user.BirthDate,
-		Gender:       pb.Gender(pb.Gender_value[string(user.Gender)]),
+		Gender:       string(user.Gender),
 		CreatedAt:    user.CreatedAt.Time.String(),
 		UpdatedAt:    user.UpdatedAt.Time.String(),
 	}, nil
@@ -88,7 +88,7 @@ func (r *UserREPO) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*
 		Faculty:     sql.NullString{String: req.Faculty, Valid: req.Faculty != ""},
 		Course:      sql.NullInt16{Int16: int16(req.Course), Valid: req.Course != 0},
 		BirthDate:   req.BirthDate,
-		Gender:      storage.GenderEnum(req.Gender.String()),
+		Gender:      storage.GenderEnum(req.Gender),
 	})
 	if err != nil {
 		logger.WithError(err).Error("Failed to update user in database")
@@ -108,7 +108,7 @@ func (r *UserREPO) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*
 		Faculty:      user.Faculty.String,
 		Course:       int32(user.Course.Int16),
 		BirthDate:    user.BirthDate,
-		Gender:       pb.Gender(pb.Gender_value[string(user.Gender)]),
+		Gender:       string(user.Gender),
 		CreatedAt:    user.CreatedAt.Time.String(),
 		UpdatedAt:    user.UpdatedAt.Time.String(),
 	}, nil
@@ -147,7 +147,7 @@ func (r *UserREPO) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb
 			Faculty:      r.Faculty.String,
 			Course:       int32(r.Course.Int16),
 			BirthDate:    r.BirthDate,
-			Gender:       pb.Gender(pb.Gender_value[string(r.Gender)]),
+			Gender:       string(r.Gender),
 			CreatedAt:    r.CreatedAt.Time.String(),
 			UpdatedAt:    r.UpdatedAt.Time.String(),
 		})

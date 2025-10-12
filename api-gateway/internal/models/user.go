@@ -1,17 +1,9 @@
 package models
 
-type Gender string
-
-const (
-	GenderUnspecified Gender = "GENDER_UNSPECIFIED"
-	Male              Gender = "MALE"
-	Female            Gender = "FEMALE"
-)
-
 type ErrorResponse struct {
-    Code    int    `json:"code" example:"400"`            // HTTP status kodi
-    Message string `json:"message" example:"invalid data"` // Xatolik tavsifi
-    Details any    `json:"details,omitempty"`              // Qo‘shimcha ma’lumot (ixtiyoriy)
+	Code    int    `json:"code" example:"400"`             // HTTP status kodi
+	Message string `json:"message" example:"invalid data"` // Xatolik tavsifi
+	Details any    `json:"details,omitempty"`              // Qo‘shimcha ma’lumot (ixtiyoriy)
 }
 
 type User struct {
@@ -23,7 +15,7 @@ type User struct {
 	Faculty     string `json:"faculty" db:"faculty"`
 	Course      int32  `json:"course" db:"course"`
 	BirthDate   string `json:"birth_date" db:"birth_date"`
-	Gender      Gender `json:"gender" db:"gender"`
+	Gender      string `json:"gender" db:"gender"`
 	CreatedAt   string `json:"created_at" db:"created_at"`
 	UpdatedAt   string `json:"updated_at" db:"updated_at"`
 }
@@ -37,7 +29,7 @@ type CreateUserRequest struct {
 	Faculty      string `json:"faculty" db:"faculty"`
 	Course       int32  `json:"course" db:"course"`
 	BirthDate    string `json:"birth_date" db:"birth_date"`
-	Gender       Gender `json:"gender" db:"gender"`
+	Gender       string `json:"gender" db:"gender"`
 }
 
 type GetUserByIdentifierRequest struct {
@@ -57,7 +49,7 @@ type UpdateUserRequest struct {
 	Faculty     string `json:"faculty" db:"faculty"`
 	Course      int32  `json:"course" db:"course"`
 	BirthDate   string `json:"birth_date" db:"birth_date"`
-	Gender      Gender `json:"gender" db:"gender"`
+	Gender      string `json:"gender" db:"gender"`
 }
 
 type ChangePasswordRequest struct {
@@ -155,7 +147,6 @@ type RoleTypeList struct {
 	Roles      []RoleType `json:"roles"`
 	TotalCount int32      `json:"total_count"`
 }
-
 
 type UserRole struct {
 	ID         string `json:"id" db:"id"`

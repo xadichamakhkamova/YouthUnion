@@ -12,7 +12,7 @@ import (
 )
 
 // ! ------------------- Authorization -------------------
-// @Router /api/v1/auth/register [post]
+// @Router /auth/register [post]
 // @Summary Register User
 // @Description Registers a new user in the system
 // @Tags Auth
@@ -33,6 +33,14 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		return
 	}
 
+	if req.Gender != "MALE" && req.Gender != "FEMALE" {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: "invalid gender, must be MALE or FEMALE",
+		})
+		return
+	}
+	
 	resp, err := h.service.CreateUser(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
@@ -45,7 +53,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
-// @Router /api/v1/auth/login [post]
+// @Router /auth/login [post]
 // @Summary Get User by Identifier (Login)
 // @Description Authenticates a user using identifier and password
 // @Tags Auth
@@ -74,12 +82,12 @@ func (h *Handler) GetUserByIdentifier(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	token := token.GenereteJWTToken(int(req.Identifier))
 	c.JSON(http.StatusOK, token)
 }
 
-// @Router /api/v1/auth/change-password [patch]
+// @Router /auth/change-password [patch]
 // @Summary Change Password
 // @Security BearerAuth
 // @Description Allows user to change their password

@@ -11,7 +11,7 @@ import (
 
 func DialWithUserService(cfg config.Config) (*pb.UserServiceClient, error) {
 
-	target := fmt.Sprintf("%s:%s", cfg.UserService.Host, cfg.UserService.Port)
+	target := fmt.Sprintf("%s:%d", cfg.UserService.Host, cfg.UserService.Port)
 	conn, err := grpc.NewClient(target, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err

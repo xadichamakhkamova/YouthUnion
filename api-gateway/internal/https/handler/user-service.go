@@ -11,7 +11,7 @@ import (
 )
 
 // ! ------------------ User Handlers -------------------
-// @Router /api/v1/users/{id} [get]
+// @Router /users/{id} [get]
 // @Summary Get User By ID
 // @Security BearerAuth
 // @Description Returns user details by ID
@@ -36,7 +36,7 @@ func (h *Handler) GetUserById(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Router /api/v1/users/{id} [put]
+// @Router /users/{id} [put]
 // @Summary Update User
 // @Security BearerAuth
 // @Description Updates user information
@@ -73,7 +73,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Router /api/v1/users [get]
+// @Router /users [get]
 // @Summary List Users
 // @Security BearerAuth
 // @Description Returns list of users
@@ -99,7 +99,7 @@ func (h *Handler) ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Router /api/v1/users/{id} [delete]
+// @Router /users/{id} [delete]
 // @Summary Delete User
 // @Security BearerAuth
 // @Description Deletes user by ID
@@ -125,7 +125,7 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 }
 
 // ! ------------------- User Roles -------------------
-// @Router /api/v1/users/{id}/roles [post]
+// @Router /users/{id}/roles [post]
 // @Summary Assign Role to User
 // @Security BearerAuth
 // @Description Assigns a specific role to a user
@@ -159,7 +159,7 @@ func (h *Handler) AssignRoleToUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
-// @Router /api/v1/users/{id}/roles/{role_id} [delete]
+// @Router /users/{id}/roles/{role_id} [delete]
 // @Summary Remove Role from User
 // @Security BearerAuth
 // @Description Removes assigned role from user
@@ -187,7 +187,7 @@ func (h *Handler) RemoveRoleFromUser(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Router /api/v1/users/{id}/roles [get]
+// @Router /users/{id}/roles [get]
 // @Summary List User Roles
 // @Security BearerAuth
 // @Description Returns list of roles assigned to a user
@@ -213,7 +213,7 @@ func (h *Handler) ListUserRoles(c *gin.Context) {
 }
 
 // ! ------------------- Role Handler -------------------
-// @Router /api/v1/roles [post]
+// @Router /roles [post]
 // @Summary Create Role Type
 // @Security BearerAuth
 // @Description Creates a new role type (admin only)
@@ -246,7 +246,7 @@ func (h *Handler) CreateRole(c *gin.Context) {
 	c.JSON(http.StatusCreated, res)
 }
 
-// @Router /api/v1/roles/{id} [get]
+// @Router /roles/{id} [get]
 // @Summary Get Role By ID
 // @Security BearerAuth
 // @Description Returns role details by ID
@@ -271,7 +271,7 @@ func (h *Handler) GetRoleById(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Router /api/v1/roles/{id} [put]
+// @Router /roles/{id} [put]
 // @Summary Update Role
 // @Security BearerAuth
 // @Description Updates role information
@@ -308,7 +308,7 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Router /api/v1/roles [get]
+// @Router /roles [get]
 // @Summary List Roles
 // @Security BearerAuth
 // @Description Returns list of all role types
@@ -331,7 +331,7 @@ func (h *Handler) ListRoles(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// @Router /api/v1/roles/{id} [delete]
+// @Router /roles/{id} [delete]
 // @Summary Delete Role
 // @Security BearerAuth
 // @Description Deletes role type by ID

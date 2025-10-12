@@ -21,67 +21,67 @@ func NewServiceRepositoryClient(
 //! ------------------- Authorization -------------------
 
 func (s *ServiceRepositoryClient) CreateUser(ctx context.Context, req *pUser.CreateUserRequest) (*pUser.User, error) {
-	return s.CreateUser(ctx, req)
+	return s.userClient.CreateUser(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) GetUserByIdentifier(ctx context.Context, req *pUser.GetUserByIdentifierRequest) (*pUser.GetUserByIdentifierResponse, error) {
-	return s.GetUserByIdentifier(ctx, req)
+	return s.userClient.GetUserByIdentifier(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ChangePassword(ctx context.Context, req *pUser.ChangePasswordRequest) (*pUser.ChangePasswordResponse, error) {
-	return s.ChangePassword(ctx, req)
+	return s.userClient.ChangePassword(ctx, req)
 }
 
 //! ------------------ User Functions -------------------
 
 func (s *ServiceRepositoryClient) GetUserById(ctx context.Context, req *pUser.GetUserByIdRequest) (*pUser.User, error) {
-	return s.GetUserById(ctx, req)
+	return s.userClient.GetUserById(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) UpdateUser(ctx context.Context, req *pUser.UpdateUserRequest) (*pUser.User, error) {
-	return s.UpdateUser(ctx, req)
+	return s.userClient.UpdateUser(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ListUsers(ctx context.Context, req *pUser.ListUsersRequest) (*pUser.UserList, error) {
-	return s.ListUsers(ctx, req)
+	return s.userClient.ListUsers(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) DeleteUser(ctx context.Context, req *pUser.DeleteUserRequest) (*pUser.DeleteUserResponse, error) {
-	return s.DeleteUser(ctx, req)
+	return s.userClient.DeleteUser(ctx, req)
 }
 
 //! ------------------- User Roles -------------------
 
 func (s *ServiceRepositoryClient) AssignRoleToUser(ctx context.Context, req *pUser.AssignRoleRequest) (*pUser.UserRole, error) {
-	return s.AssignRoleToUser(ctx, req)
+	return s.userClient.AssignRoleToUser(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) RemoveRoleFromUser(ctx context.Context, req *pUser.RemoveRoleRequest) (*pUser.RemoveRoleResponse, error) {
-	return s.RemoveRoleFromUser(ctx, req)
+	return s.userClient.RemoveRoleFromUser(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ListUserRoles(ctx context.Context, req *pUser.ListUserRolesRequest) (*pUser.UserRoleList, error) {
-	return s.ListUserRoles(ctx, req)
+	return s.userClient.ListUserRoles(ctx, req)
 }
 
 //! ------------------- Role functions -------------------
 
 func (s *ServiceRepositoryClient) CreateRole(ctx context.Context, req *pUser.CreateRoleRequest) (*pUser.RoleType, error) {
-	return s.CreateRole(ctx, req)
+	return s.userClient.CreateRole(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) GetRoleById(ctx context.Context, req *pUser.GetRoleByIdRequest) (*pUser.RoleType, error) {
-	return s.GetRoleById(ctx, req)
+	return s.userClient.GetRoleById(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) UpdateRole(ctx context.Context, req *pUser.UpdateRoleRequest) (*pUser.RoleType, error) {
-	return s.UpdateRole(ctx, req)
+	return s.userClient.UpdateRole(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) ListRoles(ctx context.Context, req *pUser.ListRolesRequest) (*pUser.RoleTypeList, error) {
-	return s.ListRoles(ctx, req)
+	return s.userClient.ListRoles(ctx, req)
 }
 
 func (s *ServiceRepositoryClient) DeleteRole(ctx context.Context, req *pUser.DeleteRoleRequest) (*pUser.DeleteRoleResponse, error) {
-	return s.DeleteRole(ctx, req)
+	return s.userClient.DeleteRole(ctx, req)
 }

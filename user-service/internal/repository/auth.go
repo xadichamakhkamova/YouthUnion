@@ -43,7 +43,7 @@ func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*
 		Faculty:      sql.NullString{String: req.Faculty, Valid: req.Faculty != ""},
 		Course:       sql.NullInt16{Int16: int16(req.Course), Valid: req.Course != 0},
 		BirthDate:    req.BirthDate,
-		Gender:       storage.GenderEnum(req.Gender.String()),
+		Gender:       storage.GenderEnum(req.Gender),
 	})
 	if err != nil {
 		logger.WithError(err).Error("Failed to create user in database")
@@ -61,7 +61,7 @@ func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*
 		Faculty:     user.Faculty.String,
 		Course:      int32(user.Course.Int16),
 		BirthDate:   user.BirthDate,
-		Gender:      pb.Gender(pb.Gender_value[string(user.Gender)]),
+		Gender:      string(user.Gender),
 		CreatedAt:   user.CreatedAt.Time.String(),
 		UpdatedAt:   user.UpdatedAt.Time.String(),
 	}, nil

@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/auth/change-password": {
+        "/auth/change-password": {
             "patch": {
                 "security": [
                     {
@@ -66,7 +66,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/login": {
+        "/auth/login": {
             "post": {
                 "description": "Authenticates a user using identifier and password",
                 "consumes": [
@@ -94,7 +94,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.GetUserByIdentifierResponse"
+                            "$ref": "#/definitions/token.Tokens"
                         }
                     },
                     "400": {
@@ -112,7 +112,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/auth/register": {
+        "/auth/register": {
             "post": {
                 "description": "Registers a new user in the system",
                 "consumes": [
@@ -158,7 +158,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/roles": {
+        "/roles": {
             "get": {
                 "security": [
                     {
@@ -232,7 +232,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/roles/{id}": {
+        "/roles/{id}": {
             "get": {
                 "security": [
                     {
@@ -354,7 +354,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users": {
+        "/users": {
             "get": {
                 "security": [
                     {
@@ -399,7 +399,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/{id}": {
+        "/users/{id}": {
             "get": {
                 "security": [
                     {
@@ -521,7 +521,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/{id}/roles": {
+        "/users/{id}/roles": {
             "get": {
                 "security": [
                     {
@@ -608,7 +608,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/{id}/roles/{role_id}": {
+        "/users/{id}/roles/{role_id}": {
             "delete": {
                 "security": [
                     {
@@ -717,7 +717,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "gender": {
-                    "$ref": "#/definitions/models.Gender"
+                    "type": "string"
                 },
                 "identifier": {
                     "type": "integer"
@@ -779,19 +779,6 @@ const docTemplate = `{
                 }
             }
         },
-        "models.Gender": {
-            "type": "string",
-            "enum": [
-                "GENDER_UNSPECIFIED",
-                "MALE",
-                "FEMALE"
-            ],
-            "x-enum-varnames": [
-                "GenderUnspecified",
-                "Male",
-                "Female"
-            ]
-        },
         "models.GetUserByIdentifierRequest": {
             "type": "object",
             "properties": {
@@ -800,14 +787,6 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
-                }
-            }
-        },
-        "models.GetUserByIdentifierResponse": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "type": "integer"
                 }
             }
         },
@@ -889,7 +868,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "gender": {
-                    "$ref": "#/definitions/models.Gender"
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -921,7 +900,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "gender": {
-                    "$ref": "#/definitions/models.Gender"
+                    "type": "string"
                 },
                 "id": {
                     "type": "string"
@@ -982,6 +961,17 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/models.UserRole"
                     }
+                }
+            }
+        },
+        "token.Tokens": {
+            "type": "object",
+            "properties": {
+                "expiresIn": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
                 }
             }
         }
