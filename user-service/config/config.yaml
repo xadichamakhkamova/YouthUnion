@@ -1,0 +1,10 @@
+service:
+  host: localhost
+  port: 8001
+
+postgres:
+  host: localhost
+  port: 5432
+  dbname: usersdb
+  user: postgres
+  password: 1403
