@@ -48,7 +48,7 @@ func (r *UserREPO) AssignRoleToUser(ctx context.Context, req *pb.AssignRoleReque
 		Id:         resp.ID.String(),
 		UserId:     resp.UserID.String(),
 		RoleId:     resp.RoleID.String(),
-		AssignedAt: resp.AssignedAt.Time.Format(time.RFC3339),
+		AssignedAt: resp.AssignedAt.Time.String(),
 	}, nil
 }
 
@@ -114,7 +114,7 @@ func (r *UserREPO) ListUserRoles(ctx context.Context, req *pb.ListUserRolesReque
 			Id:         r.ID.String(),
 			UserId:     r.ID.URN(),
 			RoleId:     r.Name,
-			AssignedAt: r.CreatedAt.Time.Format(time.RFC3339),
+			AssignedAt: r.CreatedAt.Time.String(),
 		})
 		totalCount = r.TotalCount
 	}
@@ -154,8 +154,8 @@ func (r *UserREPO) CreateRole(ctx context.Context, req *pb.CreateRoleRequest) (*
 		Id:          resp.ID.String(),
 		Name:        resp.Name,
 		Description: resp.Description.String,
-		CreatedAt:   resp.CreatedAt.Time.Format(time.RFC3339),
-		UpdatedAt:   resp.UpdatedAt.Time.Format(time.RFC3339),
+		CreatedAt:   resp.CreatedAt.Time.String(),
+		UpdatedAt:   resp.UpdatedAt.Time.String(),
 	}, nil
 }
 
@@ -185,8 +185,8 @@ func (r *UserREPO) GetRoleById(ctx context.Context, req *pb.GetRoleByIdRequest) 
 		Id:          resp.ID.String(),
 		Name:        resp.Name,
 		Description: resp.Description.String,
-		CreatedAt:   resp.CreatedAt.Time.Format(time.RFC3339),
-		UpdatedAt:   resp.UpdatedAt.Time.Format(time.RFC3339),
+		CreatedAt:   resp.CreatedAt.Time.String(),
+		UpdatedAt:   resp.UpdatedAt.Time.String(),
 	}, nil
 }
 
@@ -220,8 +220,8 @@ func (r *UserREPO) UpdateRole(ctx context.Context, req *pb.UpdateRoleRequest) (*
 		Id:          resp.ID.String(),
 		Name:        resp.Name,
 		Description: resp.Description.String,
-		CreatedAt:   resp.CreatedAt.Time.Format(time.RFC3339),
-		UpdatedAt:   resp.UpdatedAt.Time.Format(time.RFC3339),
+		CreatedAt:   resp.CreatedAt.Time.String(),
+		UpdatedAt:   resp.UpdatedAt.Time.String(),
 	}, nil
 }
 
@@ -252,8 +252,8 @@ func (r *UserREPO) ListRoles(ctx context.Context, req *pb.ListRolesRequest) (*pb
 			Id:          r.ID.String(),
 			Name:        r.Name,
 			Description: r.Description.String,
-			CreatedAt:   r.CreatedAt.Time.Format(time.RFC3339),
-			UpdatedAt:   r.UpdatedAt.Time.Format(time.RFC3339),
+			CreatedAt:   r.CreatedAt.Time.String(),
+			UpdatedAt:   r.UpdatedAt.Time.String(),
 		})
 		totalCount = r.TotalCount
 	}

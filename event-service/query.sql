@@ -32,9 +32,8 @@ SET
     location = $4,
     start_time = $5,
     end_time = $6,
-    created_by = $7,
-    max_participants = $8,
-    status = $9
+    max_participants = $7,
+    status = $8
 WHERE id = $1 
 RETURNING
     id,
@@ -65,8 +64,8 @@ SELECT
     created_at,
     updated_at 
 FROM events 
-WHERE id = $1;  
-
+WHERE id = $1; 
+ 
 -- name: ListEvents :many
 SELECT 
     id,
@@ -84,13 +83,14 @@ SELECT
     COUNT(*) OVER() AS total_count
 FROM events 
 WHERE (
-        $1::text=''
-        OR LOWER(event_type) LIKE LOWER(CONCAT('%', $1::text, '%')) 
-        OR LOWER(status) LIKE LOWER(CONCAT('%', $1::text, '%')) 
+        $1::text = ''
+        OR LOWER(title) LIKE LOWER(CONCAT('%', $1::text, '%'))  -- name bo‘yicha qidirish
+        OR LOWER(event_type::text) LIKE LOWER(CONCAT('%', $1::text, '%'))
+        OR LOWER(status) LIKE LOWER(CONCAT('%', $1::text, '%'))
     )
 ORDER BY created_at DESC 
 LIMIT $2 
-OFFSET ($1 - $1) * $2; 
+OFFSET $3;
 
 -- name: DeleteEvent :one
 UPDATE events

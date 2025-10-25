@@ -184,18 +184,20 @@ SELECT
     COUNT(*) OVER() AS total_count
 FROM events 
 WHERE (
-        $1::text=''
-        OR LOWER(event_type) LIKE LOWER(CONCAT('%', $1::text, '%')) 
-        OR LOWER(status) LIKE LOWER(CONCAT('%', $1::text, '%')) 
+        $1::text = ''
+        OR LOWER(title) LIKE LOWER(CONCAT('%', $1::text, '%'))  -- name bo‘yicha qidirish
+        OR LOWER(event_type::text) LIKE LOWER(CONCAT('%', $1::text, '%'))
+        OR LOWER(status) LIKE LOWER(CONCAT('%', $1::text, '%'))
     )
 ORDER BY created_at DESC 
 LIMIT $2 
-OFFSET ($1 - $1) * $2
+OFFSET $3
 `
 
 type ListEventsParams struct {
 	Column1 string
 	Limit   int32
+	Offset  int32
 }
 
 type ListEventsRow struct {
@@ -215,7 +217,7 @@ type ListEventsRow struct {
 }
 
 func (q *Queries) ListEvents(ctx context.Context, arg ListEventsParams) ([]ListEventsRow, error) {
-	rows, err := q.db.QueryContext(ctx, listEvents, arg.Column1, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, listEvents, arg.Column1, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -259,9 +261,8 @@ SET
     location = $4,
     start_time = $5,
     end_time = $6,
-    created_by = $7,
-    max_participants = $8,
-    status = $9
+    max_participants = $7,
+    status = $8
 WHERE id = $1 
 RETURNING
     id,
@@ -285,7 +286,6 @@ type UpdateEventParams struct {
 	Location        sql.NullString
 	StartTime       time.Time
 	EndTime         sql.NullTime
-	CreatedBy       uuid.UUID
 	MaxParticipants sql.NullInt32
 	Status          sql.NullString
 }
@@ -313,7 +313,6 @@ func (q *Queries) UpdateEvent(ctx context.Context, arg UpdateEventParams) (Updat
 		arg.Location,
 		arg.StartTime,
 		arg.EndTime,
-		arg.CreatedBy,
 		arg.MaxParticipants,
 		arg.Status,
 	)
