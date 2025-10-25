@@ -26,27 +26,21 @@ func NewUserStore(db *sql.DB, log *logrus.Logger) *UserREPO {
 //! ------------------- User Functions -------------------
 
 func (r *UserREPO) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) (*pb.User, error) {
-	
-	logger := r.log.WithFields(logrus.Fields{
-		"method": "GetUserById",
-		"user_id": req.Id,
-	})
-
-	logger.Info("Fetching user by ID started")
+	r.log.Info("Fetching user by ID started")
 
 	id, err := uuid.Parse(req.Id)
 	if err != nil {
-		logger.WithError(err).Error("Invalid UUID format")
+		r.log.WithError(err).Error("Invalid UUID format")
 		return nil, err
 	}
 
 	user, err := r.queries.GetUserById(ctx, id)
 	if err != nil {
-		logger.WithError(err).Error("Database query failed")
+		r.log.WithError(err).Error("Database query failed")
 		return nil, err
 	}
 
-	logger.WithFields(logrus.Fields{
+	r.log.WithFields(logrus.Fields{
 		"identifier": user.Identifier,
 	}).Info("User fetched successfully")
 
@@ -66,17 +60,11 @@ func (r *UserREPO) GetUserById(ctx context.Context, req *pb.GetUserByIdRequest) 
 }
 
 func (r *UserREPO) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.User, error) {
-
-	logger := r.log.WithFields(logrus.Fields{
-		"method":  "UpdateUser",
-		"user_id": req.Id,
-	})
-
-	logger.Info("Updating user started")
+	r.log.Info("Updating user started")
 
 	id, err := uuid.Parse(req.Id)
 	if err != nil {
-		logger.WithError(err).Error("Invalid UUID format")
+		r.log.WithError(err).Error("Invalid UUID format")
 		return nil, err
 	}
 
@@ -91,11 +79,11 @@ func (r *UserREPO) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*
 		Gender:      storage.GenderEnum(req.Gender),
 	})
 	if err != nil {
-		logger.WithError(err).Error("Failed to update user in database")
+		r.log.WithError(err).Error("Failed to update user in database")
 		return nil, err
 	}
 
-	logger.WithFields(logrus.Fields{
+	r.log.WithFields(logrus.Fields{
 		"identifier": user.Identifier,
 	}).Info("User updated successfully")
 
@@ -115,14 +103,7 @@ func (r *UserREPO) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*
 }
 
 func (r *UserREPO) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb.UserList, error) {
-
-	logger := r.log.WithFields(logrus.Fields{
-		"method": "ListUsers",
-		"page":   req.Page,
-		"limit":  req.Limit,
-	})
-
-	logger.Info("Listing users started")
+	r.log.Info("Listing users started")
 
 	params := storage.ListUsersParams{
 		Column1: req.Page,
@@ -131,7 +112,7 @@ func (r *UserREPO) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb
 
 	resp, err := r.queries.ListUsers(ctx, params)
 	if err != nil {
-		logger.WithError(err).Error("Failed to fetch user list")
+		r.log.WithError(err).Error("Failed to fetch user list")
 		return nil, err
 	}
 
@@ -154,7 +135,7 @@ func (r *UserREPO) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb
 		total_count = r.TotalCount
 	}
 
-	logger.WithFields(logrus.Fields{
+	r.log.WithFields(logrus.Fields{
 		"user_count": len(users),
 		"total":      total_count,
 	}).Info("User list retrieved successfully")
@@ -166,17 +147,11 @@ func (r *UserREPO) ListUsers(ctx context.Context, req *pb.ListUsersRequest) (*pb
 }
 
 func (r *UserREPO) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserResponse, error) {
-
-	logger := r.log.WithFields(logrus.Fields{
-		"method":  "DeleteUser",
-		"user_id": req.Id,
-	})
-
-	logger.Info("Deleting user started")
+	r.log.Info("Deleting user started")
 
 	id, err := uuid.Parse(req.Id)
 	if err != nil {
-		logger.WithError(err).Error("Invalid UUID format")
+		r.log.WithError(err).Error("Invalid UUID format")
 		return nil, err
 	}
 
@@ -185,16 +160,16 @@ func (r *UserREPO) DeleteUser(ctx context.Context, req *pb.DeleteUserRequest) (*
 		DeletedAt: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	})
 	if err != nil {
-		logger.WithError(err).Error("Failed to delete user from database")
+		r.log.WithError(err).Error("Failed to delete user from database")
 		return nil, err
 	}
 
 	status := 400
 	if message == "deleted" {
 		status = 204
-		logger.WithField("status", status).Info("User deleted successfully")
+		r.log.WithField("status", status).Info("User deleted successfully")
 	} else {
-		logger.WithField("status", status).Warn("User deletion unsuccessful")
+		r.log.WithField("status", status).Warn("User deletion unsuccessful")
 	}
 
 	return &pb.DeleteUserResponse{

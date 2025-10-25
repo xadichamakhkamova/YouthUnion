@@ -8,7 +8,6 @@ import (
 	"user-service/internal/storage"
 
 	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
 	pb "github.com/xadichamakhkamova/YouthUnionContracts/genproto/userpb"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/grpc/codes"
@@ -18,19 +17,11 @@ import (
 //! ------------------- Authorization -------------------
 
 func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.User, error) {
-	
-	logger := q.log.WithFields(logrus.Fields{
-		"method":     "CreateUser",
-		"identifier": req.Identifier,
-		"first_name": req.FirstName,
-		"last_name":  req.LastName,
-	})
-
-	logger.Info("CreateUser started")
+	q.log.Info("CreateUser started")
 
 	passwordHash, err := hash.HashPassword(req.PasswordHash)
 	if err != nil {
-		logger.WithError(err).Error("Failed to hash password")
+		q.log.WithError(err).Error("Failed to hash password")
 		return nil, err
 	}
 
@@ -46,11 +37,11 @@ func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*
 		Gender:       storage.GenderEnum(req.Gender),
 	})
 	if err != nil {
-		logger.WithError(err).Error("Failed to create user in database")
+		q.log.WithError(err).Error("Failed to create user in database")
 		return nil, err
 	}
 
-	logger.WithField("user_id", user.ID.String()).Info("User created successfully")
+	q.log.WithField("user_id", user.ID.String()).Info("User created successfully")
 
 	return &pb.User{
 		Id:          user.ID.String(),
@@ -68,51 +59,39 @@ func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*
 }
 
 func (q *UserREPO) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIdentifierRequest) (*pb.GetUserByIdentifierResponse, error) {
-
-	logger := q.log.WithFields(logrus.Fields{
-		"method":     "GetUserByIdentifier",
-		"identifier": req.Identifier,
-	})
-
-	logger.Info("Authentication attempt started")
+	q.log.Info("Authentication attempt started")
 
 	user, err := q.queries.GetUserByIdentifier(ctx, req.Identifier)
 	if err != nil {
-		logger.WithError(err).Error("User not found in database")
+		q.log.WithError(err).Error("User not found in database")
 		return nil, err
 	}
 
 	// Parolni tekshirish
 	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.PasswordHash)); err != nil {
-		logger.Warn("Invalid credentials provided")
+		q.log.Warn("Invalid credentials provided")
 		return nil, status.Error(codes.Unauthenticated, "invalid credentials")
 	}
 
-	logger.WithField("user_id", user.ID.String()).Info("Authentication successful")
+	q.log.WithField("user_id", user.ID.String()).Info("Authentication successful")
 
 	return &pb.GetUserByIdentifierResponse{
-		Status: 200, // ✅ No Content
+		Status: 200,
 	}, nil
 }
 
 func (q *UserREPO) ChangePassword(ctx context.Context, req *pb.ChangePasswordRequest) (*pb.ChangePasswordResponse, error) {
-
-	logger := q.log.WithFields(logrus.Fields{
-		"method":  "ChangePassword",
-		"user_id": req.UserId,
-	})
-
-	logger.Info("Password change process started")
+	q.log.Info("Password change process started")
 
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
-		logger.WithError(err).Error("Invalid UUID format")
+		q.log.WithError(err).Error("Invalid UUID format")
 		return nil, err
 	}
 
 	newPasswordHash, err := hash.HashPassword(req.NewPassword)
 	if err != nil {
-		logger.WithError(err).Error("Failed to hash new password")
+		q.log.WithError(err).Error("Failed to hash new password")
 		return nil, err
 	}
 
@@ -121,16 +100,16 @@ func (q *UserREPO) ChangePassword(ctx context.Context, req *pb.ChangePasswordReq
 		PasswordHash: newPasswordHash,
 	})
 	if err != nil {
-		logger.WithError(err).Error("Database error while changing password")
+		q.log.WithError(err).Error("Database error while changing password")
 		return nil, err
 	}
 
 	status := 400
 	if message == "changed" {
 		status = 204
-		logger.WithField("status", status).Info("Password changed successfully")
+		q.log.WithField("status", status).Info("Password changed successfully")
 	} else {
-		logger.WithField("status", status).Warn("Password not changed")
+		q.log.WithField("status", status).Warn("Password not changed")
 	}
 
 	return &pb.ChangePasswordResponse{
