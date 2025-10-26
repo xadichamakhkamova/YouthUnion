@@ -145,7 +145,7 @@ func (r *EventRepo) GetEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.
 }
 
 func (r *EventRepo) ListEvents(ctx context.Context, req *pb.ListEventsRequest) (*pb.ListEventsResponse, error) {
-	offset := (req.Offset - 1) * req.Limit
+	offset := (req.Page - 1) * req.Limit
 
 	params := storage.ListEventsParams{
 		Column1: req.Search,
