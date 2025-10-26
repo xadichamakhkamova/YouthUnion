@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS team_invitations CASCADE;
-DROP TYPE IF EXISTS invite_status CASCADE;
