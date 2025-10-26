@@ -1,7 +1,7 @@
 package postgres 
 
 import (
-	config "user-service/internal/config"
+	config "team-service/internal/config"
 	"database/sql"
 	"fmt"
 
