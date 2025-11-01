@@ -3,7 +3,7 @@ CREATE TYPE scored_by_type AS ENUM ('ORGANIZER', 'ADMIN');
 CREATE TABLE scores (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     event_id UUID NOT NULL,
-    team_id UUID NOT NULL,                 -- team konteksti
+    team_id UUID NULL,                 -- team konteksti
     user_id UUID NOT NULL,                 -- kimga baho berildi
     points INT NOT NULL CHECK (points >= 0),
     comment TEXT,
