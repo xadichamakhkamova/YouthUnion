@@ -2,7 +2,7 @@ module api-gateway
 
 go 1.24.0
 
-toolchain go1.24.8
+toolchain go1.24.9
 
 require (
 	github.com/form3tech-oss/jwt-go v3.2.5+incompatible
@@ -11,8 +11,8 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
-	github.com/swaggo/swag v1.8.12
-	github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251102103120-a5b6faa76583
+	github.com/swaggo/swag v1.16.6
+	github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251102123930-b41b63c8d3e2
 	golang.org/x/time v0.14.0
 	google.golang.org/grpc v1.76.0
 )

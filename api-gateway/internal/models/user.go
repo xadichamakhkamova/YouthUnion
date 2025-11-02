@@ -33,8 +33,8 @@ type CreateUserRequest struct {
 }
 
 type GetUserByIdentifierRequest struct {
-	Identifier   int32  `json:"identifier" db:"identifier"`
-	PasswordHash string `json:"password" db:"password_hash"`
+	Identifier int32  `json:"identifier" db:"identifier"`
+	Password   string `json:"password" db:"password"`
 }
 
 type GetUserByIdentifierResponse struct {

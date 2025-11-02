@@ -40,21 +40,23 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 	{
 		auth := api.Group("/auth")
 		{
-			auth.POST("/register", apiHandler.CreateUser)             // Register new user
 			auth.POST("/login", apiHandler.GetUserByIdentifier)       // Login user
-			auth.PATCH("/change-password", apiHandler.ChangePassword) // Change password
 		}
 
 		users := api.Group("/users")
 		{
-			users.GET("/", apiHandler.ListUsers)        // Get all users
-			users.GET("/:id", apiHandler.GetUserById)   // Get user by ID
-			users.PUT("/:id", apiHandler.UpdateUser)    // Update user
-			users.DELETE("/:id", apiHandler.DeleteUser) // Delete user
+			users.POST("/", apiHandler.CreateUser)
+			users.GET("/", apiHandler.ListUsers)
+			users.GET("/:id", apiHandler.GetUserById)
+			users.PUT("/:id", apiHandler.UpdateUser)
+			users.DELETE("/:id", apiHandler.DeleteUser)
 
-			users.POST("/:id/roles", apiHandler.AssignRoleToUser)              // Assign role
-			users.GET("/:id/roles", apiHandler.ListUserRoles)                  // List roles
-			users.DELETE("/:id/roles/:role_id", apiHandler.RemoveRoleFromUser) // Remove role
+			users.PATCH("/:id/password", apiHandler.ChangePassword)   
+
+
+			users.POST("/:id/roles", apiHandler.AssignRoleToUser)
+			users.GET("/:id/roles", apiHandler.ListUserRoles)
+			users.DELETE("/:id/roles/:role_id", apiHandler.RemoveRoleFromUser)
 		}
 
 		roles := api.Group("/roles")

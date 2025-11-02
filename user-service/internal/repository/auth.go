@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"time"
 	"user-service/internal/hash"
 	"user-service/internal/storage"
@@ -66,7 +67,8 @@ func (q *UserREPO) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIde
 	}
 
 	// Parolni tekshirish
-	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.PasswordHash)); err != nil {
+	fmt.Println(req.Password)
+	if err := bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password)); err != nil {
 		q.log.Warn("Invalid credentials provided")
 		return nil, status.Error(codes.Unauthenticated, "invalid credentials")
 	}

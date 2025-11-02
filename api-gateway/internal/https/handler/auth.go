@@ -11,13 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Router /auth/register [post]
+// @Router /users [post]
 // @Summary Create User
 // @Description Creates a new user in the system
-// @Tags Auth
+// @Tags Users
 // @Accept json
 // @Produce json
-// @Param user body models.CreateUserRequest true "User registration data"
+// @Param user body models.CreateUserRequest true "Create user data"
 // @Success 201 {object} models.User
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
@@ -39,7 +39,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		})
 		return
 	}
-	
+
 	resp, err := h.service.CreateUser(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
@@ -86,11 +86,11 @@ func (h *Handler) GetUserByIdentifier(c *gin.Context) {
 	c.JSON(http.StatusOK, token)
 }
 
-// @Router /auth/change-password [patch]
+// @Router /users/{id}/password [patch]
 // @Summary Change Password
 // @Security BearerAuth
 // @Description Allows user to change their password
-// @Tags Auth
+// @Tags Users
 // @Accept json
 // @Produce json
 // @Param data body models.ChangePasswordRequest true "Password change data"
