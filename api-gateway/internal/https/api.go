@@ -2,6 +2,7 @@ package https
 
 import (
 	"api-gateway/internal/https/handler"
+	"api-gateway/internal/https/middleware/authorization"
 	rlimit "api-gateway/internal/https/middleware/rate-limiting"
 	"api-gateway/internal/service"
 	"crypto/tls"
@@ -27,6 +28,9 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	authMiddleware := &authorization.AuthMiddleware{}
+
+	r.Use(authMiddleware.MiddleWare())
 	r.Use(rlimit.RateLimitWithIP())
 
 	apiHandler := handler.NewApiHandler(service)
@@ -72,16 +76,16 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 
 			//event.GET("/:id/participants", apiHandler.ListParticipants)
 		}
-		
+
 		teams := api.Group("/teams")
 		{
 			teams.POST("/", apiHandler.CreateTeam)
 			teams.PUT("/:id", apiHandler.UpdateTeam)
 			teams.GET("/event/:event_id", apiHandler.GetTeamsByEvent)
-	
+
 			teams.DELETE("/:team_id/members/:user_id", apiHandler.RemoveTeamMember)
 			teams.GET("/:team_id/members", apiHandler.GetTeamMembers)
-	
+
 			// teams.POST("/:team_id/invite", apiHandler.InviteMember)
 			// teams.POST("/:team_id/respond", apiHandler.RespondInvite)
 		}

@@ -8,6 +8,7 @@ import (
 	config "api-gateway/internal/config"
 
 	"github.com/form3tech-oss/jwt-go"
+	pb "github.com/xadichamakhkamova/YouthUnionContracts/genproto/userpb"
 )
 
 type Tokens struct {
@@ -18,12 +19,13 @@ type Tokens struct {
 var cfg config.Config
 var tokenKey = cfg.TokenKey
 
-func GenereteJWTToken(identifier int) *Tokens {
+func GenereteJWTToken(user *pb.GetUserByIdentifierResponse) *Tokens {
 
 	refreshToken := jwt.New(jwt.SigningMethodHS256)
 
 	rftclaims := refreshToken.Claims.(jwt.MapClaims)
-	rftclaims["user_identifier"] = identifier
+	rftclaims["user_id"] = user.Id
+	rftclaims["user_identifier"] = user.Identifier
 	rftclaims["iat"] = time.Now().Unix()
 	rftclaims["exp"] = time.Now().Add(24 * time.Hour).Unix()
 	refresh, err := refreshToken.SignedString([]byte(tokenKey))

@@ -14,8 +14,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-//! ------------------- Authorization -------------------
-
 func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*pb.User, error) {
 	q.log.Info("CreateUser started")
 
@@ -76,7 +74,8 @@ func (q *UserREPO) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIde
 	q.log.WithField("user_id", user.ID.String()).Info("Authentication successful")
 
 	return &pb.GetUserByIdentifierResponse{
-		Status: 200,
+		Id: user.ID.String(),
+		Identifier: user.Identifier,
 	}, nil
 }
 

@@ -73,7 +73,7 @@ func (h *Handler) GetUserByIdentifier(c *gin.Context) {
 		return
 	}
 
-	_, err := h.service.GetUserByIdentifier(context.Background(), &req)
+	resp, err := h.service.GetUserByIdentifier(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, models.ErrorResponse{
 			Code:    http.StatusUnauthorized,
@@ -82,7 +82,7 @@ func (h *Handler) GetUserByIdentifier(c *gin.Context) {
 		return
 	}
 
-	token := token.GenereteJWTToken(int(req.Identifier))
+	token := token.GenereteJWTToken(resp)
 	c.JSON(http.StatusOK, token)
 }
 
