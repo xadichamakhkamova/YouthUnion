@@ -3,18 +3,30 @@ package service
 import (
 	"context"
 
+	pEvent "github.com/xadichamakhkamova/YouthUnionContracts/genproto/eventpb"
+	pScoring "github.com/xadichamakhkamova/YouthUnionContracts/genproto/scoringpb"
+	pTeam "github.com/xadichamakhkamova/YouthUnionContracts/genproto/teampb"
 	pUser "github.com/xadichamakhkamova/YouthUnionContracts/genproto/userpb"
 )
 
 type ServiceRepositoryClient struct {
-	userClient pUser.UserServiceClient
+	userClient    pUser.UserServiceClient
+	eventClient   pEvent.EventServiceClient
+	teamClient    pTeam.TeamServiceClient
+	scoringClient pScoring.ScoringServiceClient
 }
 
 func NewServiceRepositoryClient(
 	conn1 *pUser.UserServiceClient,
+	conn2 *pEvent.EventServiceClient,
+	conn3 *pTeam.TeamServiceClient,
+	conn4 *pScoring.ScoringServiceClient,
 ) *ServiceRepositoryClient {
 	return &ServiceRepositoryClient{
-		userClient: *conn1,
+		userClient:    *conn1,
+		eventClient:   *conn2,
+		teamClient:    *conn3,
+		scoringClient: *conn4,
 	}
 }
 
@@ -84,4 +96,70 @@ func (s *ServiceRepositoryClient) ListRoles(ctx context.Context, req *pUser.List
 
 func (s *ServiceRepositoryClient) DeleteRole(ctx context.Context, req *pUser.DeleteRoleRequest) (*pUser.DeleteRoleResponse, error) {
 	return s.userClient.DeleteRole(ctx, req)
+}
+
+//! ------------------- Event -------------------
+
+func (s *ServiceRepositoryClient) CreateEvent(ctx context.Context, req *pEvent.CreateEventRequest) (*pEvent.Event, error) {
+	return s.eventClient.CreateEvent(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) UpdateEvent(ctx context.Context, req *pEvent.UpdateEventRequest) (*pEvent.Event, error) {
+	return s.eventClient.UpdateEvent(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) GetEvent(ctx context.Context, req *pEvent.GetEventRequest) (*pEvent.Event, error) {
+	return s.eventClient.GetEvent(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) ListEvents(ctx context.Context, req *pEvent.ListEventsRequest) (*pEvent.ListEventsResponse, error) {
+	return s.eventClient.ListEvents(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) DeleteEvent(ctx context.Context, req *pEvent.DeleteEventRequest) (*pEvent.DeleteEventResponse, error) {
+	return s.eventClient.DeleteEvent(ctx, req)
+}
+
+//! ------------------- Team -------------------
+
+func (s *ServiceRepositoryClient) CreateTeam(ctx context.Context, req *pTeam.CreateTeamRequest) (*pTeam.Team, error) {
+	return s.teamClient.CreateTeam(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) UpdateTeam(ctx context.Context, req *pTeam.UpdateTeamRequest) (*pTeam.Team, error) {
+	return s.teamClient.UpdateTeam(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) GetTeamsByEvent(ctx context.Context, req *pTeam.GetTeamsByEventRequest) (*pTeam.TeamList, error) {
+	return s.teamClient.GetTeamsByEvent(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) GetTeamMembers(ctx context.Context, req *pTeam.GetTeamRequest) (*pTeam.MemberList, error) {
+	return s.teamClient.GetTeamMembers(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) RemoveTeamMember(ctx context.Context, req *pTeam.RemoveTeamMemberRequest) (*pTeam.StatusResponse, error) {
+	return s.teamClient.RemoveTeamMember(ctx, req)
+}
+
+//! ------------------- Scoring -------------------
+
+func (s *ServiceRepositoryClient) GiveScore(ctx context.Context, req *pScoring.GiveScoreRequest) (*pScoring.Score, error) {
+	return s.scoringClient.GiveScore(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) GetScoresByEvent(ctx context.Context, req *pScoring.GetScoresByEventRequest) (*pScoring.ScoreList, error) {
+	return s.scoringClient.GetScoresByEvent(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) GetScoresByUser(ctx context.Context, req *pScoring.GetScoresByUserRequest) (*pScoring.ScoreList, error) {
+	return s.scoringClient.GetScoresByUser(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) GetScoresByTeam(ctx context.Context, req *pScoring.GetScoresByTeamRequest) (*pScoring.ScoreList, error) {
+	return s.scoringClient.GetScoresByTeam(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) GetGlobalRanking(ctx context.Context, req *pScoring.GetGlobalRankingRequest) (*pScoring.RankingList, error) {
+	return s.scoringClient.GetGlobalRanking(ctx, req)
 }

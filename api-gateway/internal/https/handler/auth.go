@@ -11,10 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ! ------------------- Authorization -------------------
 // @Router /auth/register [post]
-// @Summary Register User
-// @Description Registers a new user in the system
+// @Summary Create User
+// @Description Creates a new user in the system
 // @Tags Auth
 // @Accept json
 // @Produce json

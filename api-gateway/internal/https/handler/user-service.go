@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// ! ------------------ User Handlers -------------------
 // @Router /users/{id} [get]
 // @Summary Get User By ID
 // @Security BearerAuth
@@ -80,7 +79,7 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 // @Tags Users
 // @Produce json
 // @Param limit query int false "Limit"
-// @Param offset query int false "Offset"
+// @Param offset query int false "Page"
 // @Success 200 {object} models.UserList
 // @Failure 500 {object} models.ErrorResponse
 func (h *Handler) ListUsers(c *gin.Context) {

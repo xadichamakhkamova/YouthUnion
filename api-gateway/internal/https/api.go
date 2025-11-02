@@ -61,6 +61,41 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 			roles.PUT("/:id", apiHandler.UpdateRole)    // Update role
 			roles.DELETE("/:id", apiHandler.DeleteRole) // Delete role
 		}
+
+		event := api.Group("/events")
+		{
+			event.POST("/", apiHandler.CreateEvent)
+			event.PUT("/:id", apiHandler.UpdateEvent)
+			event.GET("/:id", apiHandler.GetEvent)
+			event.GET("/", apiHandler.ListEvents)
+			event.DELETE("/:id", apiHandler.DeleteEvent)
+
+			//event.GET("/:id/participants", apiHandler.ListParticipants)
+		}
+		
+		teams := api.Group("/teams")
+		{
+			teams.POST("/", apiHandler.CreateTeam)
+			teams.PUT("/:id", apiHandler.UpdateTeam)
+			teams.GET("/event/:event_id", apiHandler.GetTeamsByEvent)
+	
+			teams.DELETE("/:team_id/members/:user_id", apiHandler.RemoveTeamMember)
+			teams.GET("/:team_id/members", apiHandler.GetTeamMembers)
+	
+			// teams.POST("/:team_id/invite", apiHandler.InviteMember)
+			// teams.POST("/:team_id/respond", apiHandler.RespondInvite)
+		}
+
+		scoring := api.Group("/scoring")
+		{
+			scoring.POST("/give-score", apiHandler.GiveScore)
+
+			scoring.GET("/event/:event_id", apiHandler.GetScoresByEvent)
+			scoring.GET("/user/:user_id", apiHandler.GetScoresByUser)
+			scoring.GET("/team/:team_id", apiHandler.GetScoresByTeam)
+
+			scoring.GET("/ranking", apiHandler.GetGlobalRanking)
+		}
 	}
 
 	tlsConfig := &tls.Config{
