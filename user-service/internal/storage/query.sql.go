@@ -457,7 +457,6 @@ const listUserRoles = `-- name: ListUserRoles :many
 SELECT
     ur.id,
     ur.user_id,
-    ur.role_id,
     rt.name AS role_name,
     ur.assigned_at,
     COUNT(*) OVER() AS total_count
@@ -477,7 +476,6 @@ type ListUserRolesParams struct {
 type ListUserRolesRow struct {
 	ID         uuid.UUID
 	UserID     uuid.UUID
-	RoleID     uuid.UUID
 	RoleName   string
 	AssignedAt sql.NullTime
 	TotalCount int64
@@ -495,7 +493,6 @@ func (q *Queries) ListUserRoles(ctx context.Context, arg ListUserRolesParams) ([
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
-			&i.RoleID,
 			&i.RoleName,
 			&i.AssignedAt,
 			&i.TotalCount,

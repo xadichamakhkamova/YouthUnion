@@ -15,7 +15,6 @@ import (
 
 func (r *UserREPO) AssignRoleToUser(ctx context.Context, req *pb.AssignRoleRequest) (*pb.UserRole, error) {
 	r.log.Info("Assigning role to user started")
-
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
 		r.log.WithError(err).Error("Invalid user UUID format")
@@ -79,12 +78,19 @@ func (r *UserREPO) RemoveRoleFromUser(ctx context.Context, req *pb.RemoveRoleReq
 func (r *UserREPO) ListUserRoles(ctx context.Context, req *pb.ListUserRolesRequest) (*pb.UserRoleList, error) {
 	r.log.Info("Listing user roles started")
 
-	params := storage.ListRolesParams{
-		Column1: req.Page,
+	id, err := uuid.Parse(req.UserId)
+	if err != nil {
+		r.log.WithError(err).Error("Invalid UUID format")
+		return nil, err
+	}
+
+	params := storage.ListUserRolesParams{
+		UserID:  id,
+		Column2: req.Page,
 		Limit:   req.Limit,
 	}
 
-	resp, err := r.queries.ListRoles(ctx, params)
+	resp, err := r.queries.ListUserRoles(ctx, params)
 	if err != nil {
 		r.log.WithError(err).Error("Failed to fetch user roles from database")
 		return nil, err
@@ -95,9 +101,9 @@ func (r *UserREPO) ListUserRoles(ctx context.Context, req *pb.ListUserRolesReque
 	for _, r := range resp {
 		userRoles = append(userRoles, &pb.UserRole{
 			Id:         r.ID.String(),
-			UserId:     r.ID.URN(),
-			RoleId:     r.Name,
-			AssignedAt: r.CreatedAt.Time.String(),
+			UserId:     r.UserID.String(),
+			RoleId:     r.RoleName,
+			AssignedAt: r.AssignedAt.Time.String(),
 		})
 		totalCount = r.TotalCount
 	}

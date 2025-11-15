@@ -140,6 +140,7 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 func (h *Handler) AssignRoleToUser(c *gin.Context) {
 
+	id := c.Param("id")
 	var req pb.AssignRoleRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
@@ -148,7 +149,7 @@ func (h *Handler) AssignRoleToUser(c *gin.Context) {
 		})
 		return
 	}
-
+	req.UserId = id
 	resp, err := h.service.AssignRoleToUser(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
@@ -166,8 +167,7 @@ func (h *Handler) AssignRoleToUser(c *gin.Context) {
 // @Security BearerAuth
 // @Description Removes assigned role from user
 // @Tags Roles
-// @Param id path string true "User ID"
-// @Param role_id path string true "Role ID"
+// @Param id path string true "User Role ID"
 // @Success 200 {object} models.RemoveRoleResponse
 // @Failure 404 {object} models.ErrorResponse
 func (h *Handler) RemoveRoleFromUser(c *gin.Context) {
@@ -320,11 +320,15 @@ func (h *Handler) UpdateRole(c *gin.Context) {
 // @Description Returns list of all role types
 // @Tags Roles
 // @Produce json
+// @Param limit query int false "Limit"
+// @Param page query int false "Page"
 // @Success 200 {object} models.RoleTypeList
 // @Failure 500 {object} models.ErrorResponse
 func (h *Handler) ListRoles(c *gin.Context) {
 
-	req := pb.ListRolesRequest{}
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.ListRolesRequest{Limit: int32(limit), Page: int32(page)}
 	resp, err := h.service.ListRoles(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{

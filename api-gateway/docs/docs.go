@@ -338,6 +338,20 @@ const docTemplate = `{
                     "Roles"
                 ],
                 "summary": "List Roles",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1381,15 +1395,8 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "User ID",
+                        "description": "User Role ID",
                         "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Role ID",
-                        "name": "role_id",
                         "in": "path",
                         "required": true
                     }

@@ -212,7 +212,6 @@ RETURNING 'removed' AS message;
 SELECT
     ur.id,
     ur.user_id,
-    ur.role_id,
     rt.name AS role_name,
     ur.assigned_at,
     COUNT(*) OVER() AS total_count
