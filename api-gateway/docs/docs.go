@@ -1478,7 +1478,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "event_type": {
-                    "$ref": "#/definitions/models.EventType"
+                    "type": "integer"
                 },
                 "location": {
                     "type": "string"
@@ -1629,7 +1629,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "event_type": {
-                    "$ref": "#/definitions/models.EventType"
+                    "type": "integer"
                 },
                 "id": {
                     "type": "string"
@@ -1644,7 +1644,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/models.EventStatus"
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"
@@ -1653,34 +1653,6 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
-        },
-        "models.EventStatus": {
-            "type": "string",
-            "enum": [
-                "STATUS_UNSPECIFIED",
-                "ACTIVE",
-                "CANCELLED",
-                "FINISHED"
-            ],
-            "x-enum-varnames": [
-                "StatusUnspecified",
-                "StatusActive",
-                "StatusCancelled",
-                "StatusFinished"
-            ]
-        },
-        "models.EventType": {
-            "type": "string",
-            "enum": [
-                "EVENT_TYPE_UNSPECIFIED",
-                "INDIVIDUAL",
-                "TEAM"
-            ],
-            "x-enum-varnames": [
-                "EventTypeUnspecified",
-                "EventTypeIndividual",
-                "EventTypeTeam"
-            ]
         },
         "models.GetUserByIdentifierRequest": {
             "type": "object",
@@ -1996,7 +1968,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "status": {
-                    "$ref": "#/definitions/models.EventStatus"
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"

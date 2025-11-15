@@ -34,7 +34,7 @@ SET
     end_time = $6,
     max_participants = $7,
     status = $8
-WHERE id = $1 
+WHERE id = $1 AND deleted_at = 0
 RETURNING
     id,
     event_type,
@@ -64,7 +64,7 @@ SELECT
     created_at,
     updated_at 
 FROM events 
-WHERE id = $1; 
+WHERE id = $1 AND deleted_at = 0; 
  
 -- name: ListEvents :many
 SELECT 
@@ -87,7 +87,8 @@ WHERE (
         OR LOWER(title) LIKE LOWER(CONCAT('%', $1::text, '%'))  -- name bo‘yicha qidirish
         OR LOWER(event_type::text) LIKE LOWER(CONCAT('%', $1::text, '%'))
         OR LOWER(status) LIKE LOWER(CONCAT('%', $1::text, '%'))
-    )
+    ) 
+AND deleted_at = 0
 ORDER BY created_at DESC 
 LIMIT $2 
 OFFSET $3;
