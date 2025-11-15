@@ -59,7 +59,7 @@ func (a *AuthMiddleware) MiddleWare() gin.HandlerFunc {
 			return
 		}
 
-		user_identifier, ok := claims["user_identifier"].(string)
+		userIdentifierFloat, ok := claims["user_identifier"].(float64)
 		if !ok || user_id == "" {
 			ctx.AbortWithStatusJSON(http.StatusForbidden, gin.H{
 				"error": "Identifier not found in token",
@@ -68,6 +68,7 @@ func (a *AuthMiddleware) MiddleWare() gin.HandlerFunc {
 		}
 
 		ctx.Set("user_id", user_id)
+		user_identifier := int(userIdentifierFloat)
 		ctx.Set("user_identifier", user_identifier)
 		
 		ctx.Next()

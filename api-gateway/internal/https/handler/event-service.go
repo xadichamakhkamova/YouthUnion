@@ -4,6 +4,7 @@ import (
 	"api-gateway/internal/models"
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	pb "github.com/xadichamakhkamova/YouthUnionContracts/genproto/eventpb"
@@ -11,6 +12,7 @@ import (
 
 // @Router /events/ [post]
 // @Summary Create a new event
+// @Security BearerAuth
 // @Tags Events
 // @Accept json
 // @Produce json
@@ -43,6 +45,7 @@ func (h *Handler) CreateEvent(c *gin.Context) {
 
 // @Router /events/{id} [put]
 // @Summary Update an event
+// @Security BearerAuth
 // @Tags Events
 // @Accept json
 // @Produce json
@@ -54,14 +57,6 @@ func (h *Handler) CreateEvent(c *gin.Context) {
 func (h *Handler) UpdateEvent(c *gin.Context) {
 
 	id := c.Param("id")
-	if id == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "event id is required",
-		})
-		return
-	}
-
 	var req pb.UpdateEventRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
@@ -87,6 +82,7 @@ func (h *Handler) UpdateEvent(c *gin.Context) {
 
 // @Router /events/{id} [get]
 // @Summary Get event by ID
+// @Security BearerAuth
 // @Tags Events
 // @Accept json
 // @Produce json
@@ -97,14 +93,6 @@ func (h *Handler) UpdateEvent(c *gin.Context) {
 func (h *Handler) GetEvent(c *gin.Context) {
 
 	id := c.Param("id")
-	if id == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "event id is required",
-		})
-		return
-	}
-
 	req := pb.GetEventRequest{Id: id}
 	resp, err := h.service.GetEvent(context.Background(), &req)
 	if err != nil {
@@ -120,6 +108,7 @@ func (h *Handler) GetEvent(c *gin.Context) {
 
 // @Router /events/ [get]
 // @Summary List events with filters
+// @Security BearerAuth
 // @Tags Events
 // @Accept json
 // @Produce json
@@ -132,10 +121,14 @@ func (h *Handler) GetEvent(c *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 func (h *Handler) ListEvents(c *gin.Context) {
 
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
 	req := pb.ListEventsRequest{
 		Search:    c.Query("search"),
 		EventType: pb.EventType(pb.EventType_value[c.DefaultQuery("event_type", "0")]),
 		Status:    pb.EventStatus(pb.EventStatus_value[c.DefaultQuery("status", "0")]),
+		Limit:     int32(limit),
+		Page:      int32(page),
 	}
 
 	resp, err := h.service.ListEvents(context.Background(), &req)
@@ -152,6 +145,7 @@ func (h *Handler) ListEvents(c *gin.Context) {
 
 // @Router /events/{id} [delete]
 // @Summary Delete event
+// @Security BearerAuth
 // @Tags Events
 // @Accept json
 // @Produce json
@@ -162,14 +156,6 @@ func (h *Handler) ListEvents(c *gin.Context) {
 func (h *Handler) DeleteEvent(c *gin.Context) {
 
 	id := c.Param("id")
-	if id == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "event id is required",
-		})
-		return
-	}
-
 	req := pb.DeleteEventRequest{Id: id}
 
 	resp, err := h.service.DeleteEvent(context.Background(), &req)

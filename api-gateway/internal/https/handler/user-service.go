@@ -4,6 +4,7 @@ import (
 	"api-gateway/internal/models"
 	"context"
 	"net/http"
+	"strconv"
 
 	pb "github.com/xadichamakhkamova/YouthUnionContracts/genproto/userpb"
 
@@ -79,12 +80,14 @@ func (h *Handler) UpdateUser(c *gin.Context) {
 // @Tags Users
 // @Produce json
 // @Param limit query int false "Limit"
-// @Param offset query int false "Page"
+// @Param page query int false "Page"
 // @Success 200 {object} models.UserList
 // @Failure 500 {object} models.ErrorResponse
 func (h *Handler) ListUsers(c *gin.Context) {
 
-	req := pb.ListUsersRequest{}
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.ListUsersRequest{Limit: int32(limit), Page: int32(page)}
 
 	resp, err := h.service.ListUsers(context.Background(), &req)
 	if err != nil {
@@ -192,12 +195,16 @@ func (h *Handler) RemoveRoleFromUser(c *gin.Context) {
 // @Description Returns list of roles assigned to a user
 // @Tags Roles
 // @Param id path string true "User ID"
+// @Param limit query int false "Limit"
+// @Param page query int false "Page"
 // @Success 200 {object} models.UserRoleList
 // @Failure 404 {object} models.ErrorResponse
 func (h *Handler) ListUserRoles(c *gin.Context) {
 
 	userID := c.Param("id")
-	req := pb.ListUserRolesRequest{UserId: userID}
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.ListUserRolesRequest{UserId: userID, Page: int32(page), Limit: int32(limit)}
 
 	resp, err := h.service.ListUserRoles(context.Background(), &req)
 	if err != nil {

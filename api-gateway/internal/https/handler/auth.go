@@ -13,6 +13,7 @@ import (
 
 // @Router /users [post]
 // @Summary Create User
+// @Security BearerAuth
 // @Description Creates a new user in the system
 // @Tags Users
 // @Accept json

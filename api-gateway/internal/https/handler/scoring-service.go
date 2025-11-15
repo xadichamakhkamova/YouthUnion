@@ -4,6 +4,7 @@ import (
 	"api-gateway/internal/models"
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	pb "github.com/xadichamakhkamova/YouthUnionContracts/genproto/scoringpb"
@@ -11,6 +12,7 @@ import (
 
 // @Router /scoring/give-score [post]
 // @Summary Give score to a user
+// @Security BearerAuth
 // @Tags Scoring
 // @Accept json
 // @Produce json
@@ -43,6 +45,7 @@ func (h *Handler) GiveScore(c *gin.Context) {
 
 // @Router /scoring/event/{event_id} [get]
 // @Summary Get scores by event ID
+// @Security BearerAuth
 // @Tags Scoring
 // @Accept json
 // @Produce json
@@ -52,14 +55,6 @@ func (h *Handler) GiveScore(c *gin.Context) {
 func (h *Handler) GetScoresByEvent(c *gin.Context) {
 
 	eventID := c.Param("event_id")
-	if eventID == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "event_id is required",
-		})
-		return
-	}
-
 	req := pb.GetScoresByEventRequest{EventId: eventID}
 	resp, err := h.service.GetScoresByEvent(context.Background(), &req)
 	if err != nil {
@@ -75,6 +70,7 @@ func (h *Handler) GetScoresByEvent(c *gin.Context) {
 
 // @Router /scoring/user/{user_id} [get]
 // @Summary Get scores by user ID
+// @Security BearerAuth
 // @Tags Scoring
 // @Accept json
 // @Produce json
@@ -84,14 +80,6 @@ func (h *Handler) GetScoresByEvent(c *gin.Context) {
 func (h *Handler) GetScoresByUser(c *gin.Context) {
 
 	userID := c.Param("user_id")
-	if userID == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "user_id is required",
-		})
-		return
-	}
-
 	req := pb.GetScoresByUserRequest{UserId: userID}
 	resp, err := h.service.GetScoresByUser(context.Background(), &req)
 	if err != nil {
@@ -107,6 +95,7 @@ func (h *Handler) GetScoresByUser(c *gin.Context) {
 
 // @Router /scoring/team/{team_id} [get]
 // @Summary Get scores by team ID
+// @Security BearerAuth
 // @Tags Scoring
 // @Accept json
 // @Produce json
@@ -116,14 +105,6 @@ func (h *Handler) GetScoresByUser(c *gin.Context) {
 func (h *Handler) GetScoresByTeam(c *gin.Context) {
 
 	teamID := c.Param("team_id")
-	if teamID == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "team_id is required",
-		})
-		return
-	}
-
 	req := pb.GetScoresByTeamRequest{TeamId: teamID}
 	resp, err := h.service.GetScoresByTeam(context.Background(), &req)
 	if err != nil {
@@ -139,6 +120,7 @@ func (h *Handler) GetScoresByTeam(c *gin.Context) {
 
 // @Router /scoring/ranking [get]
 // @Summary Get global ranking list
+// @Security BearerAuth
 // @Tags Scoring
 // @Accept json
 // @Produce json
@@ -148,8 +130,9 @@ func (h *Handler) GetScoresByTeam(c *gin.Context) {
 // @Failure 400 {object} models.ErrorResponse
 func (h *Handler) GetGlobalRanking(c *gin.Context) {
 
-	req := pb.GetGlobalRankingRequest{}
-
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.GetGlobalRankingRequest{Limit: int32(limit), Page: int32(page)}
 	resp, err := h.service.GetGlobalRanking(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
@@ -161,4 +144,3 @@ func (h *Handler) GetGlobalRanking(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
-

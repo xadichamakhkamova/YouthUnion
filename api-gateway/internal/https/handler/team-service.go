@@ -4,6 +4,7 @@ import (
 	"api-gateway/internal/models"
 	"context"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	pb "github.com/xadichamakhkamova/YouthUnionContracts/genproto/teampb"
@@ -11,6 +12,7 @@ import (
 
 // @Router /teams/ [post]
 // @Summary Create a new team
+// @Security BearerAuth
 // @Tags Teams
 // @Accept json
 // @Produce json
@@ -43,6 +45,7 @@ func (h *Handler) CreateTeam(c *gin.Context) {
 
 // @Router /teams/{id} [put]
 // @Summary Update a team
+// @Security BearerAuth
 // @Tags Teams
 // @Accept json
 // @Produce json
@@ -54,14 +57,6 @@ func (h *Handler) CreateTeam(c *gin.Context) {
 func (h *Handler) UpdateTeam(c *gin.Context) {
 
 	id := c.Param("id")
-	if id == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "team id is required",
-		})
-		return
-	}
-
 	var req pb.UpdateTeamRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
@@ -72,7 +67,6 @@ func (h *Handler) UpdateTeam(c *gin.Context) {
 	}
 
 	req.Id = id
-
 	resp, err := h.service.UpdateTeam(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
@@ -87,6 +81,7 @@ func (h *Handler) UpdateTeam(c *gin.Context) {
 
 // @Router /teams/event/{event_id} [get]
 // @Summary Get all teams for an event
+// @Security BearerAuth
 // @Tags Teams
 // @Accept json
 // @Produce json
@@ -98,8 +93,9 @@ func (h *Handler) UpdateTeam(c *gin.Context) {
 func (h *Handler) GetTeamsByEvent(c *gin.Context) {
 
 	eventID := c.Param("event_id")
-
-	req := pb.GetTeamsByEventRequest{EventId: eventID}
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.GetTeamsByEventRequest{EventId: eventID, Limit: int32(limit), Page: int32(page)}
 
 	resp, err := h.service.GetTeamsByEvent(context.Background(), &req)
 	if err != nil {
@@ -115,6 +111,7 @@ func (h *Handler) GetTeamsByEvent(c *gin.Context) {
 
 // @Router /teams/{team_id}/members/{user_id} [delete]
 // @Summary Remove a member from a team
+// @Security BearerAuth
 // @Tags Teams
 // @Accept json
 // @Produce json
@@ -147,6 +144,7 @@ func (h *Handler) RemoveTeamMember(c *gin.Context) {
 
 // @Router /teams/{team_id}/members [get]
 // @Summary Get all members of a team
+// @Security BearerAuth
 // @Tags Teams
 // @Accept json
 // @Produce json
@@ -156,14 +154,6 @@ func (h *Handler) RemoveTeamMember(c *gin.Context) {
 func (h *Handler) GetTeamMembers(c *gin.Context) {
 
 	teamID := c.Param("team_id")
-	if teamID == "" {
-		c.JSON(http.StatusBadRequest, models.ErrorResponse{
-			Code:    http.StatusBadRequest,
-			Message: "team_id is required",
-		})
-		return
-	}
-
 	req := pb.GetTeamRequest{TeamId: teamID}
 
 	resp, err := h.service.GetTeamMembers(context.Background(), &req)
@@ -177,4 +167,3 @@ func (h *Handler) GetTeamMembers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
-
