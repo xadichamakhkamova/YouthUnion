@@ -50,12 +50,16 @@ func (h *Handler) GiveScore(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param event_id path string true "Event ID"
+// @Param limit query int false "Limit"
+// @Param page query int false "Page"
 // @Success 200 {object} models.ScoreList
 // @Failure 400 {object} models.ErrorResponse
 func (h *Handler) GetScoresByEvent(c *gin.Context) {
 
 	eventID := c.Param("event_id")
-	req := pb.GetScoresByEventRequest{EventId: eventID}
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.GetScoresByEventRequest{EventId: eventID, Limit: int32(limit), Page: int32(page)}
 	resp, err := h.service.GetScoresByEvent(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
@@ -75,12 +79,16 @@ func (h *Handler) GetScoresByEvent(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param user_id path string true "User ID"
+// @Param limit query int false "Limit"
+// @Param page query int false "Page"
 // @Success 200 {object} models.ScoreList
 // @Failure 400 {object} models.ErrorResponse
 func (h *Handler) GetScoresByUser(c *gin.Context) {
 
 	userID := c.Param("user_id")
-	req := pb.GetScoresByUserRequest{UserId: userID}
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.GetScoresByUserRequest{UserId: userID, Limit: int32(limit), Page: int32(page)}
 	resp, err := h.service.GetScoresByUser(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
@@ -100,12 +108,16 @@ func (h *Handler) GetScoresByUser(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param team_id path string true "Team ID"
+// @Param limit query int false "Limit"
+// @Param page query int false "Page"
 // @Success 200 {object} models.ScoreList
 // @Failure 400 {object} models.ErrorResponse
 func (h *Handler) GetScoresByTeam(c *gin.Context) {
 
 	teamID := c.Param("team_id")
-	req := pb.GetScoresByTeamRequest{TeamId: teamID}
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.GetScoresByTeamRequest{TeamId: teamID, Limit: int32(limit), Page: int32(page)}
 	resp, err := h.service.GetScoresByTeam(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{

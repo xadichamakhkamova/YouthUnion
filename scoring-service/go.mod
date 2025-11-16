@@ -9,7 +9,7 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.21.0
-	github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251026150618-c82c3f85a332
+	github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251116143724-8a42d42a5d03
 	google.golang.org/grpc v1.76.0
 )
 

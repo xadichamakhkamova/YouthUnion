@@ -36,8 +36,13 @@ func (q *ScoringRepo) GiveScore(ctx context.Context, req *pb.GiveScoreRequest) (
 	if err != nil {
 		return nil, err
 	}
+	team_id, err := uuid.Parse(req.TeamId)
+	if err != nil {
+		return nil, err
+	}
 	resp, err := q.queries.GiveScore(ctx, storage.GiveScoreParams{
 		EventID:      event_id,
+		TeamID:       uuid.NullUUID{UUID: team_id, Valid: true},
 		UserID:       user_id,
 		Points:       req.Points,
 		Comment:      sql.NullString{String: req.Comment},
@@ -62,6 +67,7 @@ func (q *ScoringRepo) GiveScore(ctx context.Context, req *pb.GiveScoreRequest) (
 }
 
 func (q *ScoringRepo) GetScoresByEvent(ctx context.Context, req *pb.GetScoresByEventRequest) (*pb.ScoreList, error) {
+	offset := (req.Page - 1) * req.Limit
 
 	event_id, err := uuid.Parse(req.EventId)
 	if err != nil {
@@ -69,6 +75,8 @@ func (q *ScoringRepo) GetScoresByEvent(ctx context.Context, req *pb.GetScoresByE
 	}
 	params := storage.GetScoreByEventParams{
 		EventID: event_id,
+		Limit:   req.Limit,
+		Offset:  offset,
 	}
 	resp, err := q.queries.GetScoreByEvent(ctx, params)
 	if err != nil {
@@ -98,15 +106,18 @@ func (q *ScoringRepo) GetScoresByEvent(ctx context.Context, req *pb.GetScoresByE
 }
 
 func (q *ScoringRepo) GetScoresByUser(ctx context.Context, req *pb.GetScoresByUserRequest) (*pb.ScoreList, error) {
+	offset := (req.Page - 1) * req.Limit
 
 	event_id, err := uuid.Parse(req.UserId)
 	if err != nil {
 		return nil, err
 	}
-	params := storage.GetScoreByEventParams{
-		EventID: event_id,
+	params := storage.GetScoreByUserParams{
+		UserID: event_id,
+		Limit:  req.Limit,
+		Offset: offset,
 	}
-	resp, err := q.queries.GetScoreByEvent(ctx, params)
+	resp, err := q.queries.GetScoreByUser(ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -134,15 +145,18 @@ func (q *ScoringRepo) GetScoresByUser(ctx context.Context, req *pb.GetScoresByUs
 }
 
 func (q *ScoringRepo) GetScoresByTeam(ctx context.Context, req *pb.GetScoresByTeamRequest) (*pb.ScoreList, error) {
+	offset := (req.Page - 1) * req.Limit
 
-	event_id, err := uuid.Parse(req.TeamId)
+	team_id, err := uuid.Parse(req.TeamId)
 	if err != nil {
 		return nil, err
 	}
-	params := storage.GetScoreByEventParams{
-		EventID: event_id,
+	params := storage.GetScoreByTeamParams{
+		TeamID: uuid.NullUUID{UUID: team_id, Valid: true},
+		Limit:  req.Limit,
+		Offset: offset,
 	}
-	resp, err := q.queries.GetScoreByEvent(ctx, params)
+	resp, err := q.queries.GetScoreByTeam(ctx, params)
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +182,6 @@ func (q *ScoringRepo) GetScoresByTeam(ctx context.Context, req *pb.GetScoresByTe
 		TotalCount: int32(total_count),
 	}, nil
 }
-
 
 func (q *ScoringRepo) GetGlobalRanking(ctx context.Context, req *pb.GetGlobalRankingRequest) (*pb.RankingList, error) {
 	offset := (req.Page - 1) * req.Limit

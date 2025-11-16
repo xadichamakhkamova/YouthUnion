@@ -1,38 +1,29 @@
 package models
 
-// ================ ENUMS =================
-
-type ScoredByType string
-
-const (
-	ScoredByOrganizer ScoredByType = "ORGANIZER"
-	ScoredByAdmin     ScoredByType = "ADMIN"
-)
-
 // ================ MODELS =================
 
 type Score struct {
-	ID           string       `json:"id"`
-	EventID      string       `json:"event_id"`
-	TeamID       string      `json:"team_id,omitempty"` // nullable
-	UserID       string       `json:"user_id"`
-	Points       int32        `json:"points"`
-	Comment      string      `json:"comment,omitempty"` // nullable
-	ScoredByID   string       `json:"scored_by_id"`
-	ScoredByType ScoredByType `json:"scored_by_type"`
-	CreatedAt    string       `json:"created_at"`
+	ID           string `json:"id"`
+	EventID      string `json:"event_id"`
+	TeamID       string `json:"team_id,omitempty"` // nullable
+	UserID       string `json:"user_id"`
+	Points       int32  `json:"points"`
+	Comment      string `json:"comment,omitempty"` // nullable
+	ScoredByID   string `json:"scored_by_id"`
+	ScoredByType int32  `json:"scored_by_type"`
+	CreatedAt    string `json:"created_at"`
 }
 
 // ================ REQUESTS =================
 
 type GiveScoreRequest struct {
-	EventID      string       `json:"event_id" binding:"required"`
-	TeamID       string      `json:"team_id,omitempty"`
-	UserID       string       `json:"user_id" binding:"required"`
-	Points       int32        `json:"points" binding:"required"`
-	Comment      string      `json:"comment,omitempty"`
-	ScoredByID   string       `json:"scored_by_id" binding:"required"`
-	ScoredByType ScoredByType `json:"scored_by_type" binding:"required"`
+	EventID      string `json:"event_id" binding:"required"`
+	TeamID       string `json:"team_id,omitempty"`
+	UserID       string `json:"user_id" binding:"required"`
+	Points       int32  `json:"points" binding:"required"`
+	Comment      string `json:"comment,omitempty"`
+	ScoredByID   string `json:"scored_by_id" binding:"required"`
+	ScoredByType int32  `json:"scored_by_type" binding:"required"`
 }
 
 type GetScoresByEventRequest struct {

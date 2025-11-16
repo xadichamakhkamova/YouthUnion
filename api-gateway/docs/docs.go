@@ -557,6 +557,18 @@ const docTemplate = `{
                         "name": "event_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -696,6 +708,18 @@ const docTemplate = `{
                         "name": "team_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -738,6 +762,18 @@ const docTemplate = `{
                         "name": "user_id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1688,7 +1724,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "scored_by_type": {
-                    "$ref": "#/definitions/models.ScoredByType"
+                    "type": "integer"
                 },
                 "team_id": {
                     "type": "string"
@@ -1839,7 +1875,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "scored_by_type": {
-                    "$ref": "#/definitions/models.ScoredByType"
+                    "type": "integer"
                 },
                 "team_id": {
                     "description": "nullable",
@@ -1863,17 +1899,6 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
-        },
-        "models.ScoredByType": {
-            "type": "string",
-            "enum": [
-                "ORGANIZER",
-                "ADMIN"
-            ],
-            "x-enum-varnames": [
-                "ScoredByOrganizer",
-                "ScoredByAdmin"
-            ]
         },
         "models.StatusResponse": {
             "type": "object",
