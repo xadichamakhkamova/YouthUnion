@@ -4,6 +4,7 @@ import (
 	"context"
 
 	pEvent "github.com/xadichamakhkamova/YouthUnionContracts/genproto/eventpb"
+	pNotif "github.com/xadichamakhkamova/YouthUnionContracts/genproto/notificationpb"
 	pScoring "github.com/xadichamakhkamova/YouthUnionContracts/genproto/scoringpb"
 	pTeam "github.com/xadichamakhkamova/YouthUnionContracts/genproto/teampb"
 	pUser "github.com/xadichamakhkamova/YouthUnionContracts/genproto/userpb"
@@ -14,6 +15,7 @@ type ServiceRepositoryClient struct {
 	eventClient   pEvent.EventServiceClient
 	teamClient    pTeam.TeamServiceClient
 	scoringClient pScoring.ScoringServiceClient
+	notifClient   pNotif.NotificationServiceClient
 }
 
 func NewServiceRepositoryClient(
@@ -21,12 +23,14 @@ func NewServiceRepositoryClient(
 	conn2 *pEvent.EventServiceClient,
 	conn3 *pTeam.TeamServiceClient,
 	conn4 *pScoring.ScoringServiceClient,
+	conn5 *pNotif.NotificationServiceClient,
 ) *ServiceRepositoryClient {
 	return &ServiceRepositoryClient{
 		userClient:    *conn1,
 		eventClient:   *conn2,
 		teamClient:    *conn3,
 		scoringClient: *conn4,
+		notifClient:   *conn5,
 	}
 }
 
@@ -162,4 +166,10 @@ func (s *ServiceRepositoryClient) GetScoresByTeam(ctx context.Context, req *pSco
 
 func (s *ServiceRepositoryClient) GetGlobalRanking(ctx context.Context, req *pScoring.GetGlobalRankingRequest) (*pScoring.RankingList, error) {
 	return s.scoringClient.GetGlobalRanking(ctx, req)
+}
+
+//! ------------------- Notification -------------------
+
+func (s *ServiceRepositoryClient) SendNotification(ctx context.Context, req *pNotif.SendNotificationRequest) (*pNotif.SendNotificationResponse, error) {
+	return s.notifClient.SendNotification(ctx, req)
 }

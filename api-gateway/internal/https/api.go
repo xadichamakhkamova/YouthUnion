@@ -102,6 +102,10 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 
 			scoring.GET("/ranking", apiHandler.GetGlobalRanking)
 		}
+		notifications := api.Group("/notifications")
+		{
+			notifications.POST("/send", apiHandler.SendNotification)
+		} 
 	}
 
 	tlsConfig := &tls.Config{

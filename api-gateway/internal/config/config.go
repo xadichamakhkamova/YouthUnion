@@ -8,14 +8,15 @@ type ServiceConfig struct {
 }
 
 type Config struct {
-	ApiGateway     ServiceConfig
-	UserService    ServiceConfig
-	EventService   ServiceConfig
-	TeamService    ServiceConfig
-	ScoringService ServiceConfig
-	TokenKey       string
-	CertFile       string
-	KeyFile        string
+	ApiGateway          ServiceConfig
+	UserService         ServiceConfig
+	EventService        ServiceConfig
+	TeamService         ServiceConfig
+	ScoringService      ServiceConfig
+	NotificationService ServiceConfig
+	TokenKey            string
+	CertFile            string
+	KeyFile             string
 }
 
 func Load(path string) (*Config, error) {
@@ -48,6 +49,10 @@ func Load(path string) (*Config, error) {
 		ScoringService: ServiceConfig{
 			Host: viper.GetString("services.scoring-service.host"),
 			Port: viper.GetInt("services.scoring-service.port"),
+		},
+		NotificationService: ServiceConfig{
+			Host: viper.GetString("services.notification-service.host"),
+			Port: viper.GetInt("services.notification-service.port"),
 		},
 
 		TokenKey: viper.GetString("token.key"),
