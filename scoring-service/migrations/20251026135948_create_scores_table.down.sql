@@ -1,2 +1,2 @@
-DROP TABLE IF EXISTS events;
-DROP TYPE IF EXISTS event_type;
+DROP TABLE IF EXISTS scores;
+DROP TYPE IF EXISTS scored_by_type;

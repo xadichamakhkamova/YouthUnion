@@ -1,4 +1,4 @@
-CREATE TYPE gender_enum AS ENUM ('MALE', 'FEMALE');
+CREATE TYPE gender AS ENUM ('MALE', 'FEMALE');
 
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -10,7 +10,7 @@ CREATE TABLE users (
     faculty VARCHAR(150),
     course SMALLINT,
     birth_date VARCHAR(20) NOT NULL,
-    gender gender_enum NOT NULL,
+    gender gender NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at BIGINT DEFAULT 0
