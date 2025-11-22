@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"fmt"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -9,6 +12,7 @@ import (
 
 	app "notification-service/internal/app"
 	config "notification-service/internal/config"
+	"notification-service/internal/http/handler"
 	"notification-service/internal/repository"
 	pq "notification-service/internal/repository/postgres"
 	service "notification-service/internal/service"
@@ -53,6 +57,29 @@ func main() {
 	}()
 
 	log.Info("Server is running and ready to accept requests")
+
+	//Websocket
+	h := handler.Handler{
+		Log: log,
+	}
+
+	http.HandleFunc("/ws", h.HandleWebSocket)
+	tlsConfig := &tls.Config{
+		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
+	}
+
+	addr := fmt.Sprintf(":%s", cfg.WebSocket.Port)
+	websocket := &http.Server{
+		Addr:      addr,
+		Handler:   http.DefaultServeMux,
+		TLSConfig: tlsConfig,
+	}
+	go func() {
+		log.Info("Websocket listening on ", addr)
+		if err := websocket.ListenAndServeTLS(cfg.CertFile, cfg.KeyFile); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	// Graceful shutdown
 	stop := make(chan os.Signal, 1)

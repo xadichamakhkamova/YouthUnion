@@ -1,4 +1,4 @@
-package config 
+package config
 
 import "github.com/spf13/viper"
 
@@ -16,8 +16,11 @@ type PostgresConfig struct {
 }
 
 type Config struct {
-	Service  ServiceConfig
-	Postgres PostgresConfig
+	Service   ServiceConfig
+	WebSocket ServiceConfig
+	Postgres  PostgresConfig
+	CertFile  string
+	KeyFile   string
 }
 
 func LoadConfig(path string) (*Config, error) {
@@ -30,8 +33,12 @@ func LoadConfig(path string) (*Config, error) {
 
 	cfg := Config{
 		Service: ServiceConfig{
-			Host: viper.GetString("service.host"),
-			Port: viper.GetInt("service.port"),
+			Host: viper.GetString("service.grpc.host"),
+			Port: viper.GetInt("service.grpc.port"),
+		},
+		WebSocket:  ServiceConfig{
+			Host: viper.GetString("service.websocket.host"),
+			Port: viper.GetInt("service.websocket.port"),
 		},
 		Postgres: PostgresConfig{
 			Host:     viper.GetString("postgres.host"),
@@ -40,6 +47,9 @@ func LoadConfig(path string) (*Config, error) {
 			User:     viper.GetString("postgres.user"),
 			Password: viper.GetString("postgres.password"),
 		},
+
+		CertFile: viper.GetString("file.cert"),
+		KeyFile:  viper.GetString("file.key"),
 	}
 
 	return &cfg, nil
