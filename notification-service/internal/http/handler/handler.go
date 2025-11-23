@@ -61,11 +61,11 @@ func (h *Handler) BroadcastToClients(message string) {
 	for client := range clients {
 		err := client.WriteMessage(websocket.TextMessage, []byte(message))
 		if err != nil {
-			logrus.Error("Failed to send message to WebSocket client: ", err)
+			h.Log.Error("Failed to send message to WebSocket client: ", err)
 			client.Close()
 			delete(clients, client)
 		} else {
-			logrus.Info("Message sent to WebSocket client")
+			h.Log.Info("Message sent to WebSocket client")
 		}
 	}
 }

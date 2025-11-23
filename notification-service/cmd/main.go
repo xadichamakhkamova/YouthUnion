@@ -58,7 +58,7 @@ func main() {
 
 	log.Info("Server is running and ready to accept requests")
 
-	//Websocket
+	//! Websocket
 	h := handler.Handler{
 		Log: log,
 	}
@@ -68,7 +68,7 @@ func main() {
 		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
 	}
 
-	addr := fmt.Sprintf(":%s", cfg.WebSocket.Port)
+	addr := fmt.Sprintf(":%d", cfg.WebSocket.Port)
 	websocket := &http.Server{
 		Addr:      addr,
 		Handler:   http.DefaultServeMux,
