@@ -53,6 +53,10 @@ github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251025121217-37d447543
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251025121217-37d44754317b/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251025182251-783c89668d90 h1:BzVl6hWJJLfjQxcEn0ahWdxvWjSYAK96ElSrlmB6mcA=
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251025182251-783c89668d90/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251124183201-0915c6f949bf h1:gatbrm2ld3O1Ny/pisO7mqp3bwUnDqh3XUyVPNkoBHs=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251124183201-0915c6f949bf/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251124193504-1750f0897e03 h1:VXnGuqJpU3mg5NaQFp3mz8/eUu2RzPKsC4xuxoZVAlU=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251124193504-1750f0897e03/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
 go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJySYA=
 go.opentelemetry.io/auto/sdk v1.1.0/go.mod h1:3wSPjt5PWp2RhlCcmmOial7AvC4DQqZb7a7wCow3W8A=
 go.opentelemetry.io/otel v1.37.0 h1:9zhNfelUvx0KBfu/gb+ZgeAfAgtWrfHJZcAqFC228wQ=

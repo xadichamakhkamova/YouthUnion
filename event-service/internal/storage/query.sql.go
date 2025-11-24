@@ -254,6 +254,100 @@ func (q *Queries) ListEvents(ctx context.Context, arg ListEventsParams) ([]ListE
 	return items, nil
 }
 
+const listParticipants = `-- name: ListParticipants :many
+SELECT 
+    id,
+    event_id,
+    user_id,
+    role,
+    joined_at,
+    COUNT(*) OVER() AS total_count
+FROM event_participants
+WHERE event_id = $1
+ORDER BY joined_at ASC
+LIMIT $2
+OFFSET $3
+`
+
+type ListParticipantsParams struct {
+	EventID uuid.UUID
+	Limit   int32
+	Offset  int32
+}
+
+type ListParticipantsRow struct {
+	ID         uuid.UUID
+	EventID    uuid.UUID
+	UserID     uuid.UUID
+	Role       sql.NullString
+	JoinedAt   sql.NullTime
+	TotalCount int64
+}
+
+func (q *Queries) ListParticipants(ctx context.Context, arg ListParticipantsParams) ([]ListParticipantsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listParticipants, arg.EventID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListParticipantsRow
+	for rows.Next() {
+		var i ListParticipantsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.EventID,
+			&i.UserID,
+			&i.Role,
+			&i.JoinedAt,
+			&i.TotalCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const registerEvent = `-- name: RegisterEvent :one
+INSERT INTO event_participants (
+    event_id,
+    user_id,
+    role,
+    joined_at
+)
+VALUES ($1, $2, 'ATTENDEE', NOW())
+RETURNING
+    id,
+    event_id,
+    user_id,
+    role,
+    joined_at
+`
+
+type RegisterEventParams struct {
+	EventID uuid.UUID
+	UserID  uuid.UUID
+}
+
+func (q *Queries) RegisterEvent(ctx context.Context, arg RegisterEventParams) (EventParticipant, error) {
+	row := q.db.QueryRowContext(ctx, registerEvent, arg.EventID, arg.UserID)
+	var i EventParticipant
+	err := row.Scan(
+		&i.ID,
+		&i.EventID,
+		&i.UserID,
+		&i.Role,
+		&i.JoinedAt,
+	)
+	return i, err
+}
+
 const updateEvent = `-- name: UpdateEvent :one
 UPDATE events 
 SET
@@ -263,7 +357,8 @@ SET
     start_time = $5,
     end_time = $6,
     max_participants = $7,
-    status = $8
+    status = $8,
+    updated_at = NOW()
 WHERE id = $1 AND deleted_at = 0
 RETURNING
     id,

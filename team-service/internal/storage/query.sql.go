@@ -200,6 +200,50 @@ func (q *Queries) GetTeamsByEvent(ctx context.Context, arg GetTeamsByEventParams
 	return items, nil
 }
 
+const inviteMember = `-- name: InviteMember :one
+INSERT INTO team_invitations (
+    team_id, 
+    inviter_id, 
+    invited_user_id
+)VALUES ($1, $2, $3)
+RETURNING 
+    id,
+    team_id,
+    inviter_id,
+    invited_user_id,
+    status,
+    created_at
+`
+
+type InviteMemberParams struct {
+	TeamID        uuid.UUID
+	InviterID     uuid.UUID
+	InvitedUserID uuid.UUID
+}
+
+type InviteMemberRow struct {
+	ID            uuid.UUID
+	TeamID        uuid.UUID
+	InviterID     uuid.UUID
+	InvitedUserID uuid.UUID
+	Status        string
+	CreatedAt     sql.NullTime
+}
+
+func (q *Queries) InviteMember(ctx context.Context, arg InviteMemberParams) (InviteMemberRow, error) {
+	row := q.db.QueryRowContext(ctx, inviteMember, arg.TeamID, arg.InviterID, arg.InvitedUserID)
+	var i InviteMemberRow
+	err := row.Scan(
+		&i.ID,
+		&i.TeamID,
+		&i.InviterID,
+		&i.InvitedUserID,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const removeTeamMember = `-- name: RemoveTeamMember :exec
 DELETE FROM team_members
 WHERE team_id = $1 AND user_id = $2
@@ -215,10 +259,46 @@ func (q *Queries) RemoveTeamMember(ctx context.Context, arg RemoveTeamMemberPara
 	return err
 }
 
+const respondInvite = `-- name: RespondInvite :one
+UPDATE team_invitations
+SET status = $1, responded_at = NOW()
+WHERE team_id = $2 AND invited_user_id = $3 AND status = 'PENDING'
+RETURNING 
+    id,
+    team_id,
+    inviter_id,
+    invited_user_id,
+    status,
+    created_at,
+    responded_at
+`
+
+type RespondInviteParams struct {
+	Status        string
+	TeamID        uuid.UUID
+	InvitedUserID uuid.UUID
+}
+
+func (q *Queries) RespondInvite(ctx context.Context, arg RespondInviteParams) (TeamInvitation, error) {
+	row := q.db.QueryRowContext(ctx, respondInvite, arg.Status, arg.TeamID, arg.InvitedUserID)
+	var i TeamInvitation
+	err := row.Scan(
+		&i.ID,
+		&i.TeamID,
+		&i.InviterID,
+		&i.InvitedUserID,
+		&i.Status,
+		&i.CreatedAt,
+		&i.RespondedAt,
+	)
+	return i, err
+}
+
 const updateTeam = `-- name: UpdateTeam :one
 UPDATE teams
 SET 
-    name = $2
+    name = $2,
+    updated_at = NOW()
 WHERE id = $1
 RETURNING
     id,

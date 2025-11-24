@@ -183,6 +183,39 @@ func (r *EventRepo) ListEvents(ctx context.Context, req *pb.ListEventsRequest) (
 	}, nil
 }
 
+func (r *EventRepo) ListParticipants(ctx context.Context, req *pb.EventParticipantRequest) (*pb.EventParticipantResponse, error) {
+	offset := (req.Page - 1) * req.Limit
+
+	event_id, err := uuid.Parse(req.EventId)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := r.queries.ListParticipants(ctx, storage.ListParticipantsParams{
+		EventID: event_id,
+		Limit:   req.Limit,
+		Offset:  offset,
+	})
+	if err != nil {
+		return nil, err
+	}
+	var participants []*pb.EventParticipant
+	var total_count int64
+	for _, r := range resp {
+		participants = append(participants, &pb.EventParticipant{
+			Id:       r.ID.String(),
+			EventId:  r.EventID.String(),
+			UserId:   r.UserID.String(),
+			Role:     r.Role.String,
+			JoinedAt: r.JoinedAt.Time.String(),
+		})
+		total_count = r.TotalCount
+	}
+	return &pb.EventParticipantResponse{
+		Participants: participants,
+		TotalCount: int32(total_count),
+	}, nil
+}
+
 func (r *EventRepo) DeleteEvent(ctx context.Context, req *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
 
 	id, err := uuid.Parse(req.Id)
@@ -190,7 +223,7 @@ func (r *EventRepo) DeleteEvent(ctx context.Context, req *pb.DeleteEventRequest)
 		return nil, err
 	}
 	message, err := r.queries.DeleteEvent(ctx, storage.DeleteEventParams{
-		ID: id,
+		ID:        id,
 		DeletedAt: sql.NullInt64{Int64: time.Now().Unix(), Valid: true},
 	})
 	if err != nil {
@@ -205,6 +238,32 @@ func (r *EventRepo) DeleteEvent(ctx context.Context, req *pb.DeleteEventRequest)
 	}
 
 	return &pb.DeleteEventResponse{
-		Status:        int32(status),
+		Status: int32(status),
+	}, nil
+}
+
+func (r *EventRepo) RegisterEvent(ctx context.Context, req *pb.RegisterEventRequest) (*pb.EventParticipant, error) {
+
+	event_id, err := uuid.Parse(req.EventId)
+	if err != nil {
+		return nil, err
+	}
+	user_id, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := r.queries.RegisterEvent(ctx, storage.RegisterEventParams{
+		EventID: event_id,
+		UserID:  user_id,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.EventParticipant{
+		Id:       resp.ID.String(),
+		EventId:  resp.EventID.String(),
+		UserId:   resp.UserID.String(),
+		Role:     resp.Role.String,
+		JoinedAt: resp.JoinedAt.Time.String(),
 	}, nil
 }

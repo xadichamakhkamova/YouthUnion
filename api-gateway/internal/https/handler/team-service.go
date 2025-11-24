@@ -167,3 +167,69 @@ func (h *Handler) GetTeamMembers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, resp)
 }
+
+// @Router /teams/invite [post]
+// @Summary Invite a member to a team
+// @Security BearerAuth
+// @Tags Teams
+// @Accept json
+// @Produce json
+// @Param data body models.InviteMemberRequest true "Invite a member"
+// @Success 200 {object} models.InvitationsResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+func (h *Handler) InviteMember(c *gin.Context) {
+
+	var req pb.InviteMemberRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	resp, err := h.service.InviteMember(context.Background(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// @Router /teams/respond [post]
+// @Summary Respond to a team invitation
+// @Security BearerAuth
+// @Tags Teams
+// @Accept json
+// @Produce json
+// @Param data body models.RespondInviteRequest true "Respond to invitation"
+// @Success 200 {object} models.InvitationsResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+func (h *Handler) RespondInvite(c *gin.Context) {
+
+	var req pb.RespondInviteRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	resp, err := h.service.RespondInvite(context.Background(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}

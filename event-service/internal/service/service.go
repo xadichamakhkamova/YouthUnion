@@ -39,3 +39,11 @@ func (s *EventService) ListEvents(ctx context.Context, req *pb.ListEventsRequest
 func (s *EventService) DeleteEvent(ctx context.Context, req *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error) {
 	return s.repo.DeleteEvent(ctx, req)
 }
+
+func (s *EventService) RegisterEvent(ctx context.Context, req *pb.RegisterEventRequest) (*pb.EventParticipant, error) {
+	return s.repo.RegisterEvent(ctx, req)
+}
+
+func (s *EventService) ListParticipants(ctx context.Context, req *pb.EventParticipantRequest) (*pb.EventParticipantResponse, error) {
+	return s.repo.ListParticipants(ctx, req)
+}

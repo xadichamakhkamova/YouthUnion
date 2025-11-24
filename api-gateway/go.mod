@@ -12,7 +12,7 @@ require (
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1
 	github.com/swaggo/swag v1.16.6
-	github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251119041450-e9bf08810f35
+	github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251124193504-1750f0897e03
 	golang.org/x/time v0.14.0
 	google.golang.org/grpc v1.76.0
 )

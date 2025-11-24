@@ -33,7 +33,8 @@ SET
     start_time = $5,
     end_time = $6,
     max_participants = $7,
-    status = $8
+    status = $8,
+    updated_at = NOW()
 WHERE id = $1 AND deleted_at = 0
 RETURNING
     id,
@@ -93,9 +94,37 @@ ORDER BY created_at DESC
 LIMIT $2 
 OFFSET $3;
 
+-- name: ListParticipants :many
+SELECT 
+    id,
+    event_id,
+    user_id,
+    role,
+    joined_at,
+    COUNT(*) OVER() AS total_count
+FROM event_participants
+WHERE event_id = $1
+ORDER BY joined_at ASC
+LIMIT $2
+OFFSET $3;
+
 -- name: DeleteEvent :one
 UPDATE events
 SET deleted_at = $2
 WHERE id = $1
 RETURNING 'deleted' AS message;
 
+-- name: RegisterEvent :one
+INSERT INTO event_participants (
+    event_id,
+    user_id,
+    role,
+    joined_at
+)
+VALUES ($1, $2, 'ATTENDEE', NOW())
+RETURNING
+    id,
+    event_id,
+    user_id,
+    role,
+    joined_at;

@@ -144,6 +144,8 @@ github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251116143724-8a42d42a5
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251116143724-8a42d42a5d03/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251119041450-e9bf08810f35 h1:ar1I5YemSuykVjT64H78Q1KEWEGa7niP4w9OSNkzJAs=
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251119041450-e9bf08810f35/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251124193504-1750f0897e03 h1:VXnGuqJpU3mg5NaQFp3mz8/eUu2RzPKsC4xuxoZVAlU=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251124193504-1750f0897e03/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJySYA=
 go.opentelemetry.io/auto/sdk v1.1.0/go.mod h1:3wSPjt5PWp2RhlCcmmOial7AvC4DQqZb7a7wCow3W8A=

@@ -21,4 +21,7 @@ type ITeamRepository interface {
 	GetTeamsByEvent(ctx context.Context, req *pb.GetTeamsByEventRequest) (*pb.TeamList, error) 
 	GetTeamMembers(ctx context.Context, req *pb.GetTeamRequest) (*pb.MemberList, error)
 	RemoveTeamMember(ctx context.Context, req *pb.RemoveTeamMemberRequest) (*pb.StatusResponse, error)
+
+	InviteMember(ctx context.Context, req *pb.InviteMemberRequest) (*pb.InvitationsResponse, error)
+	RespondInvite(ctx context.Context, req *pb.RespondInviteRequest) (*pb.InvitationsResponse, error)
 }

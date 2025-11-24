@@ -96,3 +96,13 @@ type MemberList struct {
 type StatusResponse struct {
 	Status int32 `json:"status"`
 }
+
+type InvitationsResponse struct {
+	ID            string `json:"id" example:"i12345"`
+	TeamID        string `json:"team_id" example:"t12345"`
+	InviterID     string `json:"inviter_id" example:"u12345"`
+	InvitedUserID string `json:"invited_user_id" example:"u67890"`
+	Status        string `json:"status" example:"PENDING"`
+	CreatedAt     string `json:"created_at" example:"2025-11-24T18:30:00Z"`
+	RespondedAt   string `json:"responded_at" example:"2025-11-24T19:00:00Z"`
+}

@@ -323,6 +323,123 @@ const docTemplate = `{
                 }
             }
         },
+        "/events/{id}/participants": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event Registration"
+                ],
+                "summary": "List all participants of an event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Event ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.EventParticipantResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/events/{id}/register": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Event Registration"
+                ],
+                "summary": "Register a user for an individual event",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Event ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "User registration data",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RegisterEventRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.EventParticipant"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/notifications/send": {
             "post": {
                 "security": [
@@ -939,6 +1056,106 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/invite": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "Invite a member to a team",
+                "parameters": [
+                    {
+                        "description": "Invite a member",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.InviteMemberRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.InvitationsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/teams/respond": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Teams"
+                ],
+                "summary": "Respond to a team invitation",
+                "parameters": [
+                    {
+                        "description": "Respond to invitation",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.RespondInviteRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.InvitationsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -1740,6 +1957,40 @@ const docTemplate = `{
                 }
             }
         },
+        "models.EventParticipant": {
+            "type": "object",
+            "properties": {
+                "event_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "joined_at": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.EventParticipantResponse": {
+            "type": "object",
+            "properties": {
+                "participants": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.EventParticipant"
+                    }
+                },
+                "total_count": {
+                    "type": "integer"
+                }
+            }
+        },
         "models.GetUserByIdentifierRequest": {
             "type": "object",
             "properties": {
@@ -1783,6 +2034,71 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        },
+        "models.InvitationsResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "2025-11-24T18:30:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "i12345"
+                },
+                "invited_user_id": {
+                    "type": "string",
+                    "example": "u67890"
+                },
+                "inviter_id": {
+                    "type": "string",
+                    "example": "u12345"
+                },
+                "responded_at": {
+                    "type": "string",
+                    "example": "2025-11-24T19:00:00Z"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "team_id": {
+                    "type": "string",
+                    "example": "t12345"
+                }
+            }
+        },
+        "models.InviteMemberRequest": {
+            "type": "object",
+            "required": [
+                "invited_user_id",
+                "inviter_id",
+                "team_id"
+            ],
+            "properties": {
+                "invited_user_id": {
+                    "type": "string"
+                },
+                "inviter_id": {
+                    "type": "string"
+                },
+                "team_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.InviteStatus": {
+            "type": "string",
+            "enum": [
+                "PENDING",
+                "ACCEPTED",
+                "REJECTED"
+            ],
+            "x-enum-varnames": [
+                "InvitePending",
+                "InviteAccepted",
+                "InviteRejected"
+            ]
         },
         "models.ListEventsResponse": {
             "type": "object",
@@ -1887,6 +2203,22 @@ const docTemplate = `{
                 }
             }
         },
+        "models.RegisterEventRequest": {
+            "type": "object",
+            "required": [
+                "event_id",
+                "user_id"
+            ],
+            "properties": {
+                "event_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "individual user yoki leader",
+                    "type": "string"
+                }
+            }
+        },
         "models.RemoveRoleResponse": {
             "type": "object",
             "properties": {
@@ -1898,6 +2230,25 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "integer"
+                }
+            }
+        },
+        "models.RespondInviteRequest": {
+            "type": "object",
+            "required": [
+                "invited_user_id",
+                "status",
+                "team_id"
+            ],
+            "properties": {
+                "invited_user_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/models.InviteStatus"
+                },
+                "team_id": {
+                    "type": "string"
                 }
             }
         },

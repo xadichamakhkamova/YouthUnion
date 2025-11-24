@@ -125,8 +125,8 @@ func (h *Handler) ListEvents(c *gin.Context) {
 	limit, _ := strconv.Atoi(c.Query("limit"))
 	req := pb.ListEventsRequest{
 		Search:    c.Query("search"),
-		EventType: pb.EventType(pb.EventType_value[c.DefaultQuery("event_type", "0")]),
-		Status:    pb.EventStatus(pb.EventStatus_value[c.DefaultQuery("status", "0")]),
+		EventType: pb.EventType(pb.EventType_value[c.Query("event_tyoe")]),
+		Status:    pb.EventStatus(pb.EventStatus_value[c.Query("status")]),
 		Limit:     int32(limit),
 		Page:      int32(page),
 	}
@@ -159,6 +159,115 @@ func (h *Handler) DeleteEvent(c *gin.Context) {
 	req := pb.DeleteEventRequest{Id: id}
 
 	resp, err := h.service.DeleteEvent(context.Background(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+// @Router /events/{id}/register [post]
+// @Summary Register a user for an individual event
+// @Security BearerAuth
+// @Tags Event Registration
+// @Accept json
+// @Produce json
+// @Param id path string true "Event ID"
+// @Param data body models.RegisterEventRequest true "User registration data"
+// @Success 201 {object} models.EventParticipant
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+func (h *Handler) RegisterEvent(c *gin.Context) {
+	eventID := c.Param("id")
+
+	var req pb.RegisterEventRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	req.EventId = eventID
+
+	resp, err := h.service.RegisterEvent(context.Background(), &req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, resp)
+}
+
+// @Router /events/{id}/register-team [post]
+// @Summary Register a team for a team event
+// @Security BearerAuth
+// @Tags Event Registration
+// @Accept json
+// @Produce json
+// @Param id path string true "Event ID"
+// @Param data body models.RegisterTeamEventRequest true "Team registration data"
+// @Success 201 {object} []models.EventParticipant
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// func (h *Handler) RegisterTeamEvent(c *gin.Context) {
+// 	eventID := c.Param("id")
+
+// 	var req pb.RegisterTeamEventRequest
+// 	if err := c.ShouldBindJSON(&req); err != nil {
+// 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
+// 			Code:    http.StatusBadRequest,
+// 			Message: err.Error(),
+// 		})
+// 		return
+// 	}
+
+// 	req.EventId = eventID
+
+// 	resp, err := h.service.RegisterTeamEvent(context.Background(), &req)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
+// 			Code:    http.StatusInternalServerError,
+// 			Message: err.Error(),
+// 		})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusCreated, resp)
+// }
+
+// @Router /events/{id}/participants [get]
+// @Summary List all participants of an event
+// @Security BearerAuth
+// @Tags Event Registration
+// @Accept json
+// @Produce json
+// @Param id path string true "Event ID"
+// @Param limit query int false "Limit"
+// @Param page query int false "Page"
+// @Success 200 {object} models.EventParticipantResponse
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+func (h *Handler) ListParticipants(c *gin.Context) {
+
+	eventID := c.Param("id")
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	req := pb.EventParticipantRequest{
+		EventId: eventID,
+		Page:    int32(page),
+		Limit:   int32(limit),
+	}
+
+	resp, err := h.service.ListParticipants(context.Background(), &req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Code:    http.StatusInternalServerError,

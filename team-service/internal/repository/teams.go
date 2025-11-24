@@ -163,3 +163,64 @@ func (q *TeamRepo) RemoveTeamMember(ctx context.Context, req *pb.RemoveTeamMembe
 		Status: 204,
 	}, nil
 }
+
+func (q *TeamRepo) InviteMember(ctx context.Context, req *pb.InviteMemberRequest) (*pb.InvitationsResponse, error) {
+
+	team_id, err := uuid.Parse(req.TeamId)
+	if err != nil {
+		return nil, err
+	}
+	inviter_id, err := uuid.Parse(req.InviterId)
+	if err != nil {
+		return nil, err
+	}
+	invited_user_id, err := uuid.Parse(req.InvitedUserId)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := q.queries.InviteMember(ctx, storage.InviteMemberParams{
+		TeamID: team_id,
+		InviterID: inviter_id,
+		InvitedUserID: invited_user_id,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InvitationsResponse{
+		Id: resp.ID.String(),
+		TeamId: resp.TeamID.String(),
+		InviterId: resp.InviterID.String(),
+		InvitedUserId: resp.InvitedUserID.String(),
+		Status: resp.Status,
+		CreatedAt: resp.CreatedAt.Time.String(),
+	}, nil
+}
+
+func (q *TeamRepo) RespondInvite(ctx context.Context, req *pb.RespondInviteRequest) (*pb.InvitationsResponse, error) {
+
+	team_id, err := uuid.Parse(req.TeamId)
+	if err != nil {
+		return nil, err
+	}
+	invited_user_id, err := uuid.Parse(req.InvitedUserId)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := q.queries.RespondInvite(ctx, storage.RespondInviteParams{
+		Status: req.Status.String(),
+		TeamID: team_id,
+		InvitedUserID: invited_user_id,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &pb.InvitationsResponse{
+		Id: resp.ID.String(),
+		TeamId: resp.TeamID.String(),
+		InviterId: resp.InviterID.String(),
+		InvitedUserId: resp.InvitedUserID.String(),
+		Status: resp.Status,
+		CreatedAt: resp.CreatedAt.Time.String(),
+		RespondedAt: resp.RespondedAt.Time.String(),
+	}, nil
+}

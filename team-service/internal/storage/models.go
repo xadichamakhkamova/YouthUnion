@@ -20,6 +20,16 @@ type Team struct {
 	UpdatedAt sql.NullTime
 }
 
+type TeamInvitation struct {
+	ID            uuid.UUID
+	TeamID        uuid.UUID
+	InviterID     uuid.UUID
+	InvitedUserID uuid.UUID
+	Status        string
+	CreatedAt     sql.NullTime
+	RespondedAt   sql.NullTime
+}
+
 type TeamMember struct {
 	ID       uuid.UUID
 	TeamID   uuid.UUID

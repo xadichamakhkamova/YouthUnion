@@ -53,7 +53,6 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 
 			users.PATCH("/:id/password", apiHandler.ChangePassword)   
 
-
 			users.POST("/:id/roles", apiHandler.AssignRoleToUser)
 			users.GET("/:id/roles", apiHandler.ListUserRoles)
 			users.DELETE("/:id/roles/:role_id", apiHandler.RemoveRoleFromUser)
@@ -76,7 +75,8 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 			event.GET("/", apiHandler.ListEvents)
 			event.DELETE("/:id", apiHandler.DeleteEvent)
 
-			//event.GET("/:id/participants", apiHandler.ListParticipants)
+			event.POST("/:id/register", apiHandler.RegisterEvent)
+			event.GET("/:id/participants", apiHandler.ListParticipants)
 		}
 
 		teams := api.Group("/teams")
@@ -84,12 +84,11 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 			teams.POST("/", apiHandler.CreateTeam)
 			teams.PUT("/:id", apiHandler.UpdateTeam)
 			teams.GET("/event/:event_id", apiHandler.GetTeamsByEvent)
-
 			teams.DELETE("/:team_id/members/:user_id", apiHandler.RemoveTeamMember)
 			teams.GET("/:team_id/members", apiHandler.GetTeamMembers)
-
-			// teams.POST("/:team_id/invite", apiHandler.InviteMember)
-			// teams.POST("/:team_id/respond", apiHandler.RespondInvite)
+			
+			teams.POST("/invite", apiHandler.InviteMember)
+			teams.POST("/respond", apiHandler.RespondInvite)
 		}
 
 		scoring := api.Group("/scoring")
@@ -102,6 +101,7 @@ func NewGin(service *service.ServiceRepositoryClient, port int) *http.Server {
 
 			scoring.GET("/ranking", apiHandler.GetGlobalRanking)
 		}
+
 		notifications := api.Group("/notifications")
 		{
 			notifications.POST("/send", apiHandler.SendNotification)

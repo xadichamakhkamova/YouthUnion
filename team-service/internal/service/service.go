@@ -37,3 +37,11 @@ func (s *TeamService) GetTeamMembers(ctx context.Context, req *pb.GetTeamRequest
 func (s *TeamService) RemoveTeamMember(ctx context.Context, req *pb.RemoveTeamMemberRequest) (*pb.StatusResponse, error) {
 	return s.repo.RemoveTeamMember(ctx, req)
 }
+
+func (s *TeamService) InviteMember(ctx context.Context, req *pb.InviteMemberRequest) (*pb.InvitationsResponse, error) {
+	return s.repo.InviteMember(ctx, req)
+}
+
+func (s *TeamService) RespondInvite(ctx context.Context, req *pb.RespondInviteRequest) (*pb.InvitationsResponse, error) {
+	return s.repo.RespondInvite(ctx, req)
+}

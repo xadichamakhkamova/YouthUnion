@@ -21,4 +21,7 @@ type IEventRepository interface {
 	GetEvent(ctx context.Context, req *pb.GetEventRequest) (*pb.Event, error)
 	ListEvents(ctx context.Context, req *pb.ListEventsRequest) (*pb.ListEventsResponse, error)
 	DeleteEvent(ctx context.Context, req *pb.DeleteEventRequest) (*pb.DeleteEventResponse, error)
+
+	RegisterEvent(ctx context.Context, req *pb.RegisterEventRequest) (*pb.EventParticipant, error)
+	ListParticipants(ctx context.Context, req *pb.EventParticipantRequest) (*pb.EventParticipantResponse, error)
 }

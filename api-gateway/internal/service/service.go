@@ -124,6 +124,14 @@ func (s *ServiceRepositoryClient) DeleteEvent(ctx context.Context, req *pEvent.D
 	return s.eventClient.DeleteEvent(ctx, req)
 }
 
+func (s *ServiceRepositoryClient) RegisterEvent(ctx context.Context, req *pEvent.RegisterEventRequest) (*pEvent.EventParticipant, error) {
+	return s.eventClient.RegisterEvent(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) ListParticipants(ctx context.Context, req *pEvent.EventParticipantRequest) (*pEvent.EventParticipantResponse, error) {
+	return s.eventClient.ListParticipants(ctx, req)
+}
+
 //! ------------------- Team -------------------
 
 func (s *ServiceRepositoryClient) CreateTeam(ctx context.Context, req *pTeam.CreateTeamRequest) (*pTeam.Team, error) {
@@ -144,6 +152,14 @@ func (s *ServiceRepositoryClient) GetTeamMembers(ctx context.Context, req *pTeam
 
 func (s *ServiceRepositoryClient) RemoveTeamMember(ctx context.Context, req *pTeam.RemoveTeamMemberRequest) (*pTeam.StatusResponse, error) {
 	return s.teamClient.RemoveTeamMember(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) InviteMember(ctx context.Context, req *pTeam.InviteMemberRequest) (*pTeam.InvitationsResponse, error) {
+	return s.teamClient.InviteMember(ctx, req)
+}
+
+func (s *ServiceRepositoryClient) RespondInvite(ctx context.Context, req *pTeam.RespondInviteRequest) (*pTeam.InvitationsResponse, error) {
+	return s.teamClient.RespondInvite(ctx, req)
 }
 
 //! ------------------- Scoring -------------------
