@@ -12,7 +12,7 @@ import (
 
 	app "notification-service/internal/app"
 	config "notification-service/internal/config"
-	"notification-service/internal/http/handler"
+	"notification-service/internal/https/handler"
 	"notification-service/internal/repository"
 	pq "notification-service/internal/repository/postgres"
 	service "notification-service/internal/service"
@@ -44,7 +44,8 @@ func main() {
 	log.Info("Notification repository initialized")
 
 	// Initialize service
-	srv := service.NewNotifService(repo)
+	hub := handler.NewHub(log)
+	srv := service.NewNotifService(repo, hub)
 	log.Info("Notification service initialized")
 
 	// Initialize gRPC application
@@ -59,11 +60,7 @@ func main() {
 	log.Info("Server is running and ready to accept requests")
 
 	//! Websocket
-	h := handler.Handler{
-		Log: log,
-	}
-
-	http.HandleFunc("/ws", h.HandleWebSocket)
+	http.HandleFunc("/ws", hub.HandleWebSocket)
 	tlsConfig := &tls.Config{
 		CurvePreferences: []tls.CurveID{tls.X25519, tls.CurveP256},
 	}
