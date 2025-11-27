@@ -18,10 +18,10 @@ CREATE TYPE notification_type AS ENUM (
 CREATE TABLE IF NOT EXISTS notifications (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 
-    sender_id UUID NOT NULL,
+    sender_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     sender_type sender_type NOT NULL,
 
-    user_id UUID,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     is_public BOOLEAN NOT NULL DEFAULT FALSE,
 
     title VARCHAR(255) NOT NULL,

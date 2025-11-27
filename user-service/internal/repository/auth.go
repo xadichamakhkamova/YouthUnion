@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"time"
 	"user-service/internal/hash"
 	"user-service/internal/storage"
 
@@ -31,9 +30,9 @@ func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*
 		PhoneNumber:  req.PhoneNumber,
 		PasswordHash: passwordHash,
 		Faculty:      sql.NullString{String: req.Faculty, Valid: req.Faculty != ""},
-		Course:       sql.NullInt16{Int16: int16(req.Course), Valid: req.Course != 0},
+		Course:       sql.NullInt32{Int32: int32(req.Course), Valid: req.Course != 0},
 		BirthDate:    req.BirthDate,
-		Gender:       storage.GenderEnum(req.Gender),
+		Gender:       storage.Gender(req.Gender),
 	})
 	if err != nil {
 		q.log.WithError(err).Error("Failed to create user in database")
@@ -49,7 +48,7 @@ func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*
 		LastName:    user.LastName,
 		PhoneNumber: user.PhoneNumber,
 		Faculty:     user.Faculty.String,
-		Course:      int32(user.Course.Int16),
+		Course:      user.Course.Int32,
 		BirthDate:   user.BirthDate,
 		Gender:      string(user.Gender),
 		CreatedAt:   user.CreatedAt.Time.String(),
@@ -57,7 +56,7 @@ func (q *UserREPO) CreateUser(ctx context.Context, req *pb.CreateUserRequest) (*
 	}, nil
 }
 
-func (q *UserREPO) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIdentifierRequest) (*pb.GetUserByIdentifierResponse, error) {
+func (q *UserREPO) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIdentifierRequest) (*pb.LoginResponse, error) {
 	q.log.Info("Authentication attempt started")
 
 	user, err := q.queries.GetUserByIdentifier(ctx, req.Identifier)
@@ -75,9 +74,14 @@ func (q *UserREPO) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIde
 
 	q.log.WithField("user_id", user.ID.String()).Info("Authentication successful")
 
-	return &pb.GetUserByIdentifierResponse{
-		Id: user.ID.String(),
-		Identifier: user.Identifier,
+	return &pb.LoginResponse{
+		User: &pb.User{
+			Id:          user.ID.String(),
+			Identifier:  user.Identifier,
+			FirstName:   user.FirstName,
+			LastName:    user.LastName,
+			PhoneNumber: user.PhoneNumber,
+		},
 	}, nil
 }
 
@@ -96,7 +100,7 @@ func (q *UserREPO) ChangePassword(ctx context.Context, req *pb.ChangePasswordReq
 		return nil, err
 	}
 
-	message, err := q.queries.ChangePassword(ctx, storage.ChangePasswordParams{
+	resp, err := q.queries.ChangePassword(ctx, storage.ChangePasswordParams{
 		ID:           id,
 		PasswordHash: newPasswordHash,
 	})
@@ -105,16 +109,17 @@ func (q *UserREPO) ChangePassword(ctx context.Context, req *pb.ChangePasswordReq
 		return nil, err
 	}
 
-	status := 400
-	if message == "changed" {
-		status = 204
-		q.log.WithField("status", status).Info("Password changed successfully")
+	is_success := false
+	if resp.Message == "changed" {
+		is_success = true
+		q.log.Info("Password changed successfully")
 	} else {
-		q.log.WithField("status", status).Warn("Password not changed")
+		q.log.Warn("Password not changed")
 	}
 
 	return &pb.ChangePasswordResponse{
-		Status:    int32(status),
-		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		Success:   is_success,
+		Message:   resp.Message,
+		UpdatedAt: resp.UpdatedAt.Time.String(),
 	}, nil
 }

@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS team_invitations (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
-    inviter_id UUID NOT NULL,           -- kim taklif qildi (odatda leader)
-    invited_user_id UUID NOT NULL,      -- kimga taklif yuborildi
+    inviter_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,           -- kim taklif qildi (odatda leader)
+    invited_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,      -- kimga taklif yuborildi
     status VARCHAR(10) NOT NULL DEFAULT 'PENDING', -- PENDING / ACCEPTED / REJECTED
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     responded_at TIMESTAMP NULL,

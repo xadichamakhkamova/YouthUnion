@@ -81,7 +81,9 @@ UPDATE users
 SET password_hash = $2,
     updated_at = NOW()
 WHERE id = $1
-RETURNING 'changed' AS message;
+RETURNING 
+    'changed' AS message,
+    updated_at;
 
 -- name: ListUsers :many
 SELECT
@@ -98,15 +100,22 @@ SELECT
     updated_at,
     COUNT(*) OVER() AS total_count
 FROM users
+WHERE
+    ($1::text IS NULL OR (first_name ILIKE '%' || $1 || '%' OR last_name ILIKE '%' || $1 || '%' OR identifier ILIKE '%' || $1 || '%'))
+    AND ($2::text IS NULL OR faculty = $2)
+    AND ($3::int IS NULL OR course = $3)
 ORDER BY created_at DESC
-LIMIT $2 
-OFFSET ($1 - 1) * $2;
+LIMIT $4
+OFFSET $5;
 
 -- name: DeleteUser :one
 UPDATE users
 SET deleted_at = $2
 WHERE id = $1
-RETURNING 'deleted' AS message;
+RETURNING 
+    'deleted' AS message,
+    id,
+    deleted_at;
 
 
 -- name: CreateSession :one
@@ -181,8 +190,8 @@ SELECT
     COUNT(*) OVER() AS total_count
 FROM roles_type
 ORDER BY created_at DESC
-LIMIT $2 
-OFFSET ($1 - 1) * $2;
+LIMIT $1 
+OFFSET $2;
 
 -- name: DeleteRole :one
 DELETE FROM roles_type
@@ -218,5 +227,5 @@ SELECT
 FROM user_roles ur
 JOIN roles_type rt ON ur.role_id = rt.id
 WHERE ur.user_id = $1
-LIMIT $3 
-OFFSET ($2 - 1) * $3;
+LIMIT $2 
+OFFSET $3;

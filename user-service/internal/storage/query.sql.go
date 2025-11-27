@@ -49,7 +49,9 @@ UPDATE users
 SET password_hash = $2,
     updated_at = NOW()
 WHERE id = $1
-RETURNING 'changed' AS message
+RETURNING 
+    'changed' AS message,
+    updated_at
 `
 
 type ChangePasswordParams struct {
@@ -57,11 +59,16 @@ type ChangePasswordParams struct {
 	PasswordHash string
 }
 
-func (q *Queries) ChangePassword(ctx context.Context, arg ChangePasswordParams) (string, error) {
+type ChangePasswordRow struct {
+	Message   string
+	UpdatedAt sql.NullTime
+}
+
+func (q *Queries) ChangePassword(ctx context.Context, arg ChangePasswordParams) (ChangePasswordRow, error) {
 	row := q.db.QueryRowContext(ctx, changePassword, arg.ID, arg.PasswordHash)
-	var message string
-	err := row.Scan(&message)
-	return message, err
+	var i ChangePasswordRow
+	err := row.Scan(&i.Message, &i.UpdatedAt)
+	return i, err
 }
 
 const createRole = `-- name: CreateRole :one
@@ -174,9 +181,9 @@ type CreateUserParams struct {
 	PhoneNumber  string
 	PasswordHash string
 	Faculty      sql.NullString
-	Course       sql.NullInt16
+	Course       sql.NullInt32
 	BirthDate    string
-	Gender       GenderEnum
+	Gender       Gender
 }
 
 type CreateUserRow struct {
@@ -186,9 +193,9 @@ type CreateUserRow struct {
 	LastName    string
 	PhoneNumber string
 	Faculty     sql.NullString
-	Course      sql.NullInt16
+	Course      sql.NullInt32
 	BirthDate   string
-	Gender      GenderEnum
+	Gender      Gender
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 }
@@ -239,7 +246,10 @@ const deleteUser = `-- name: DeleteUser :one
 UPDATE users
 SET deleted_at = $2
 WHERE id = $1
-RETURNING 'deleted' AS message
+RETURNING 
+    'deleted' AS message,
+    id,
+    deleted_at
 `
 
 type DeleteUserParams struct {
@@ -247,11 +257,17 @@ type DeleteUserParams struct {
 	DeletedAt sql.NullInt64
 }
 
-func (q *Queries) DeleteUser(ctx context.Context, arg DeleteUserParams) (string, error) {
+type DeleteUserRow struct {
+	Message   string
+	ID        uuid.UUID
+	DeletedAt sql.NullInt64
+}
+
+func (q *Queries) DeleteUser(ctx context.Context, arg DeleteUserParams) (DeleteUserRow, error) {
 	row := q.db.QueryRowContext(ctx, deleteUser, arg.ID, arg.DeletedAt)
-	var message string
-	err := row.Scan(&message)
-	return message, err
+	var i DeleteUserRow
+	err := row.Scan(&i.Message, &i.ID, &i.DeletedAt)
+	return i, err
 }
 
 const getRoleByID = `-- name: GetRoleByID :one
@@ -334,9 +350,9 @@ type GetUserByIdRow struct {
 	LastName    string
 	PhoneNumber string
 	Faculty     sql.NullString
-	Course      sql.NullInt16
+	Course      sql.NullInt32
 	BirthDate   string
-	Gender      GenderEnum
+	Gender      Gender
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 }
@@ -405,13 +421,13 @@ SELECT
     COUNT(*) OVER() AS total_count
 FROM roles_type
 ORDER BY created_at DESC
-LIMIT $2 
-OFFSET ($1 - 1) * $2
+LIMIT $1 
+OFFSET $2
 `
 
 type ListRolesParams struct {
-	Column1 interface{}
-	Limit   int32
+	Limit  int32
+	Offset int32
 }
 
 type ListRolesRow struct {
@@ -424,7 +440,7 @@ type ListRolesRow struct {
 }
 
 func (q *Queries) ListRoles(ctx context.Context, arg ListRolesParams) ([]ListRolesRow, error) {
-	rows, err := q.db.QueryContext(ctx, listRoles, arg.Column1, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, listRoles, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -463,14 +479,14 @@ SELECT
 FROM user_roles ur
 JOIN roles_type rt ON ur.role_id = rt.id
 WHERE ur.user_id = $1
-LIMIT $3 
-OFFSET ($2 - 1) * $3
+LIMIT $2 
+OFFSET $3
 `
 
 type ListUserRolesParams struct {
-	UserID  uuid.UUID
-	Column2 interface{}
-	Limit   int32
+	UserID uuid.UUID
+	Limit  int32
+	Offset int32
 }
 
 type ListUserRolesRow struct {
@@ -482,7 +498,7 @@ type ListUserRolesRow struct {
 }
 
 func (q *Queries) ListUserRoles(ctx context.Context, arg ListUserRolesParams) ([]ListUserRolesRow, error) {
-	rows, err := q.db.QueryContext(ctx, listUserRoles, arg.UserID, arg.Column2, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, listUserRoles, arg.UserID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -525,14 +541,21 @@ SELECT
     updated_at,
     COUNT(*) OVER() AS total_count
 FROM users
+WHERE
+    ($1::text IS NULL OR (first_name ILIKE '%' || $1 || '%' OR last_name ILIKE '%' || $1 || '%' OR identifier ILIKE '%' || $1 || '%'))
+    AND ($2::text IS NULL OR faculty = $2)
+    AND ($3::int IS NULL OR course = $3)
 ORDER BY created_at DESC
-LIMIT $2 
-OFFSET ($1 - 1) * $2
+LIMIT $4
+OFFSET $5
 `
 
 type ListUsersParams struct {
-	Column1 interface{}
+	Column1 string
+	Column2 string
+	Column3 int32
 	Limit   int32
+	Offset  int32
 }
 
 type ListUsersRow struct {
@@ -542,16 +565,22 @@ type ListUsersRow struct {
 	LastName    string
 	PhoneNumber string
 	Faculty     sql.NullString
-	Course      sql.NullInt16
+	Course      sql.NullInt32
 	BirthDate   string
-	Gender      GenderEnum
+	Gender      Gender
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 	TotalCount  int64
 }
 
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]ListUsersRow, error) {
-	rows, err := q.db.QueryContext(ctx, listUsers, arg.Column1, arg.Limit)
+	rows, err := q.db.QueryContext(ctx, listUsers,
+		arg.Column1,
+		arg.Column2,
+		arg.Column3,
+		arg.Limit,
+		arg.Offset,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -672,9 +701,9 @@ type UpdateUserParams struct {
 	LastName    string
 	PhoneNumber string
 	Faculty     sql.NullString
-	Course      sql.NullInt16
+	Course      sql.NullInt32
 	BirthDate   string
-	Gender      GenderEnum
+	Gender      Gender
 }
 
 type UpdateUserRow struct {
@@ -684,9 +713,9 @@ type UpdateUserRow struct {
 	LastName    string
 	PhoneNumber string
 	Faculty     sql.NullString
-	Course      sql.NullInt16
+	Course      sql.NullInt32
 	BirthDate   string
-	Gender      GenderEnum
+	Gender      Gender
 	CreatedAt   sql.NullTime
 	UpdatedAt   sql.NullTime
 }

@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"time"
 	"user-service/internal/storage"
 
 	"github.com/google/uuid"
@@ -45,10 +44,10 @@ func (r *UserREPO) AssignRoleToUser(ctx context.Context, req *pb.AssignRoleReque
 	}, nil
 }
 
-func (r *UserREPO) RemoveRoleFromUser(ctx context.Context, req *pb.RemoveRoleRequest) (*pb.RemoveRoleResponse, error) {
+func (r *UserREPO) RemoveRoleFromUser(ctx context.Context, req *pb.RemoveRoleRequest) (*pb.StatusResponse, error) {
 	r.log.Info("Removing role from user started")
 
-	id, err := uuid.Parse(req.Id)
+	id, err := uuid.Parse(req.UserRoleId)
 	if err != nil {
 		r.log.WithError(err).Error("Invalid UUID format")
 		return nil, err
@@ -60,23 +59,23 @@ func (r *UserREPO) RemoveRoleFromUser(ctx context.Context, req *pb.RemoveRoleReq
 		return nil, err
 	}
 
-	status := 400
+	is_success := false
 	if message == "removed" {
-		status = 204
-		r.log.WithField("status", status).Info("Role removed successfully")
+		is_success = true
+		r.log.Info("Role removed successfully")
 	} else {
-		r.log.WithField("status", status).Warn("Role removal unsuccessful")
+		r.log.Warn("Role removal unsuccessful")
 	}
 
-	return &pb.RemoveRoleResponse{
-		Status:        int32(status),
-		RemovedRoleId: req.Id,
-		RemovedAt:     time.Now().Format("2006-01-02 15:04:05"),
+	return &pb.StatusResponse{
+		Success: is_success,
+		Message: message,
 	}, nil
 }
 
 func (r *UserREPO) ListUserRoles(ctx context.Context, req *pb.ListUserRolesRequest) (*pb.UserRoleList, error) {
 	r.log.Info("Listing user roles started")
+	offset := (req.Page - 1) * req.Limit
 
 	id, err := uuid.Parse(req.UserId)
 	if err != nil {
@@ -85,9 +84,9 @@ func (r *UserREPO) ListUserRoles(ctx context.Context, req *pb.ListUserRolesReque
 	}
 
 	params := storage.ListUserRolesParams{
-		UserID:  id,
-		Column2: req.Page,
-		Limit:   req.Limit,
+		UserID: id,
+		Limit:  req.Limit,
+		Offset: offset,
 	}
 
 	resp, err := r.queries.ListUserRoles(ctx, params)
@@ -201,10 +200,11 @@ func (r *UserREPO) UpdateRole(ctx context.Context, req *pb.UpdateRoleRequest) (*
 
 func (r *UserREPO) ListRoles(ctx context.Context, req *pb.ListRolesRequest) (*pb.RoleTypeList, error) {
 	r.log.Info("Listing roles started")
+	offset := (req.Page - 1) * req.Limit
 
 	params := storage.ListRolesParams{
-		Column1: req.Page,
-		Limit:   req.Limit,
+		Limit:  req.Limit,
+		Offset: offset,
 	}
 
 	resp, err := r.queries.ListRoles(ctx, params)
@@ -234,7 +234,7 @@ func (r *UserREPO) ListRoles(ctx context.Context, req *pb.ListRolesRequest) (*pb
 	}, nil
 }
 
-func (r *UserREPO) DeleteRole(ctx context.Context, req *pb.DeleteRoleRequest) (*pb.DeleteRoleResponse, error) {
+func (r *UserREPO) DeleteRole(ctx context.Context, req *pb.DeleteRoleRequest) (*pb.StatusResponse, error) {
 	r.log.Info("Deleting role started")
 
 	id, err := uuid.Parse(req.Id)
@@ -249,16 +249,16 @@ func (r *UserREPO) DeleteRole(ctx context.Context, req *pb.DeleteRoleRequest) (*
 		return nil, err
 	}
 
-	status := 400
+	is_success := false
 	if message == "deleted" {
-		status = 204
-		r.log.WithField("status", status).Info("Role deleted successfully")
+		is_success = true
+		r.log.Info("Role deleted successfully")
 	} else {
-		r.log.WithField("status", status).Warn("Role deletion unsuccessful")
+		r.log.Warn("Role deletion unsuccessful")
 	}
 
-	return &pb.DeleteRoleResponse{
-		Status:        int32(status),
-		DeletedRoleId: req.Id,
+	return &pb.StatusResponse{
+		Success: is_success,
+		Message: message,
 	}, nil
 }

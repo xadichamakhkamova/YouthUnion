@@ -24,7 +24,7 @@ func (s *UserService) CreateUser(ctx context.Context, req *pb.CreateUserRequest)
 	return s.repo.CreateUser(ctx, req)
 }
 
-func (s *UserService) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIdentifierRequest) (*pb.GetUserByIdentifierResponse, error) {
+func (s *UserService) GetUserByIdentifier(ctx context.Context, req *pb.GetUserByIdentifierRequest) (*pb.LoginResponse, error) {
 	return s.repo.GetUserByIdentifier(ctx, req)
 }
 
@@ -56,7 +56,7 @@ func (s *UserService) AssignRoleToUser(ctx context.Context, req *pb.AssignRoleRe
 	return s.repo.AssignRoleToUser(ctx, req)
 }
 
-func (s *UserService) RemoveRoleFromUser(ctx context.Context, req *pb.RemoveRoleRequest) (*pb.RemoveRoleResponse, error) {
+func (s *UserService) RemoveRoleFromUser(ctx context.Context, req *pb.RemoveRoleRequest) (*pb.StatusResponse, error) {
 	return s.repo.RemoveRoleFromUser(ctx, req)
 }
 
@@ -83,6 +83,6 @@ func (s *UserService) ListRoles(ctx context.Context, req *pb.ListRolesRequest) (
 	return s.repo.ListRoles(ctx, req)
 }
 
-func (s *UserService) DeleteRole(ctx context.Context, req *pb.DeleteRoleRequest) (*pb.DeleteRoleResponse, error) {
+func (s *UserService) DeleteRole(ctx context.Context, req *pb.DeleteRoleRequest) (*pb.StatusResponse, error) {
 	return s.repo.DeleteRole(ctx, req)
 }

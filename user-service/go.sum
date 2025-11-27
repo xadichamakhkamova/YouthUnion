@@ -51,6 +51,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251102123930-b41b63c8d3e2 h1:Emv0jX2GPoA3iE+LbkEwTh2rxDBOdgYFjRc14MOmONE=
 github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251102123930-b41b63c8d3e2/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251126193147-3e9ba6d6868a h1:bGCYKC7n8niseXZ3+1Hwpdj7m/Hyk//0+LKmwuKyOZY=
+github.com/xadichamakhkamova/YouthUnionContracts v0.0.0-20251126193147-3e9ba6d6868a/go.mod h1:gQhYMqlws44LLcf9T4ABU6Z3Lk7s5Gbio18Foed4S9g=
 go.opentelemetry.io/auto/sdk v1.1.0 h1:cH53jehLUN6UFLY71z+NDOiNJqDdPRaXzTel0sJySYA=
 go.opentelemetry.io/auto/sdk v1.1.0/go.mod h1:3wSPjt5PWp2RhlCcmmOial7AvC4DQqZb7a7wCow3W8A=
 go.opentelemetry.io/otel v1.37.0 h1:9zhNfelUvx0KBfu/gb+ZgeAfAgtWrfHJZcAqFC228wQ=

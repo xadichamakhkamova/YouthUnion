@@ -13,46 +13,46 @@ import (
 	"github.com/google/uuid"
 )
 
-type GenderEnum string
+type Gender string
 
 const (
-	GenderEnumMALE   GenderEnum = "MALE"
-	GenderEnumFEMALE GenderEnum = "FEMALE"
+	GenderMALE   Gender = "MALE"
+	GenderFEMALE Gender = "FEMALE"
 )
 
-func (e *GenderEnum) Scan(src interface{}) error {
+func (e *Gender) Scan(src interface{}) error {
 	switch s := src.(type) {
 	case []byte:
-		*e = GenderEnum(s)
+		*e = Gender(s)
 	case string:
-		*e = GenderEnum(s)
+		*e = Gender(s)
 	default:
-		return fmt.Errorf("unsupported scan type for GenderEnum: %T", src)
+		return fmt.Errorf("unsupported scan type for Gender: %T", src)
 	}
 	return nil
 }
 
-type NullGenderEnum struct {
-	GenderEnum GenderEnum
-	Valid      bool // Valid is true if GenderEnum is not NULL
+type NullGender struct {
+	Gender Gender
+	Valid  bool // Valid is true if Gender is not NULL
 }
 
 // Scan implements the Scanner interface.
-func (ns *NullGenderEnum) Scan(value interface{}) error {
+func (ns *NullGender) Scan(value interface{}) error {
 	if value == nil {
-		ns.GenderEnum, ns.Valid = "", false
+		ns.Gender, ns.Valid = "", false
 		return nil
 	}
 	ns.Valid = true
-	return ns.GenderEnum.Scan(value)
+	return ns.Gender.Scan(value)
 }
 
 // Value implements the driver Valuer interface.
-func (ns NullGenderEnum) Value() (driver.Value, error) {
+func (ns NullGender) Value() (driver.Value, error) {
 	if !ns.Valid {
 		return nil, nil
 	}
-	return string(ns.GenderEnum), nil
+	return string(ns.Gender), nil
 }
 
 type RolesType struct {
@@ -73,9 +73,9 @@ type User struct {
 	PhoneNumber  string
 	PasswordHash string
 	Faculty      sql.NullString
-	Course       sql.NullInt16
+	Course       sql.NullInt32
 	BirthDate    string
-	Gender       GenderEnum
+	Gender       Gender
 	CreatedAt    sql.NullTime
 	UpdatedAt    sql.NullTime
 	DeletedAt    sql.NullInt64

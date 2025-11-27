@@ -7,9 +7,12 @@ INSERT INTO events (
     start_time,
     end_time,
     created_by,
-    max_participants
+    max_participants,
+    min_team_size,
+    max_team_size,
+    poster_url,
 )
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 RETURNING 
     id,
     event_type,
@@ -21,6 +24,9 @@ RETURNING
     created_by,
     max_participants,
     status,
+    min_team_size,
+    max_team_size,
+    poster_url,
     created_at,
     updated_at; 
 
