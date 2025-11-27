@@ -114,8 +114,7 @@ SET deleted_at = $2
 WHERE id = $1
 RETURNING 
     'deleted' AS message,
-    id,
-    deleted_at;
+    id;
 
 
 -- name: CreateSession :one
