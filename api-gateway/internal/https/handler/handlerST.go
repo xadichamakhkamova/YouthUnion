@@ -2,7 +2,6 @@ package handler
 
 import (
 	"api-gateway/internal/service"
-	"context"
 )
 
 type Handler struct {
@@ -14,5 +13,3 @@ func NewApiHandler(service *service.ServiceRepositoryClient) *Handler {
 		service: service,
 	}
 }
-
-var ctx = context.Background()
